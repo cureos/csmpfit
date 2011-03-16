@@ -1,9 +1,9 @@
 MPFit (csmpfit) Project
 Copyright (c) 2011 David J. Cuccia, Ph.D.
 
-The csmpfit project was built using libraries and resources distributed under the licenses listed below. Where it is required, we have included the license file (license.txt) with the library or resource.
+The csmpfit project was built using libraries and resources distributed under the licenses listed below. Where it is required, we have included the license file (license.txt) with the library or resource
 
--=================<Libraries & Resources>====================-
+-=================<Libraries, Resources, and Acknowledgements>====================-
 
 -==<IDL MPFIT/CMPFIT Libraries>==-
 
@@ -13,3 +13,13 @@ License:	Public
 Credit:		B. Garbow, K. Hillstrom, J. More' (Argonne National Laboratory, MINPACK project, March 1980), 
 		C. Markwardt (Enhancements and packaging)
 		S. Moshier (ported from Fortran to C)
+
+
+-==<VirtualPhotonics Technology Initiative/>==-
+
+Details:	C# port of MPFIT Libraries 
+Website (src):	http://virtualphotonics.codeplex.com
+Website (prj):	http://virtualphotonics.org
+License:	MIT/X11
+Credit:		D. Cuccia
+* This work was made possible in part by the Laser Microbeam and Medical Program (LAMMP: P41 RR01192), an NIH/NCRR National Biomedical Technology Center."
