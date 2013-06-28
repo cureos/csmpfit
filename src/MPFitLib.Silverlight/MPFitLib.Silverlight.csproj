@@ -78,6 +78,9 @@
     <Reference Include="System.Windows.Browser" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="..\MPFitLib\DelimitedArrayOfDouble.cs">
+      <Link>DelimitedArrayOfDouble.cs</Link>
+    </Compile>
     <Compile Include="..\MPFitLib\DelimitedArrayOfT.cs">
       <Link>DelimitedArrayOfT.cs</Link>
     </Compile>

@@ -14,10 +14,10 @@
  */
 
 /* Main MPFit library routines (double precision) 
-   $Id: MPFit.cs,v 1.1 2010/05/04 dcuccia Exp $
+   $Id: MPFit.cs,v 1.2 2013/06/27  dcuccia Exp $
  */
 
-using System.Collections.Generic;
+using System.Collections;
 
 namespace MPFitLib
 {
@@ -34,6 +34,6 @@ namespace MPFitLib
     /// </param>
     /// <param name="prv">I/O - function private data (cast to object type in user function)</param>
     /// <returns></returns>
-    public delegate int mp_func(double[] a, double[] fvec, IList<double>[] dvec, object prv);
+    public delegate int mp_func(double[] a, double[] fvec, double[][] dvec, object prv);
     //public delegate int mp_func(int m, int npar, double[] x, double[] fvec, IList<double>[] dvec, object prv);
 }
