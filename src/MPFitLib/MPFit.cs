@@ -18,7 +18,6 @@
  */
 
 using System;
-using System.Collections.Generic;
 
 namespace MPFitLib
 {
@@ -1202,7 +1201,7 @@ namespace MPFitLib
             int iflag = 0;
             double eps, h, temp;
             const double zero = 0.0;
-            IList<double>[] dvec;
+            DelimitedArrayOfDouble[] dvec;
             int hasAnalyticalDeriv = 0, hasNumericalDeriv = 0;
             int hasDebugDeriv = 0;
 
@@ -1211,7 +1210,7 @@ namespace MPFitLib
             ij = 0;
 
             //dvec = (double**)malloc(sizeof(double**) * npar);
-            dvec = new double[npar][];
+            dvec = new DelimitedArrayOfDouble[npar];
 
             //for (j = 0; j < npar; j++)
             //{
@@ -1233,14 +1232,14 @@ namespace MPFitLib
                 {
                     /* Purely analytical derivatives */
                     // reference a range of values inside larger array fjac (pointer arithmatic work-around)
-                    dvec[ifree[j]] = new DelimitedArray<double>(fjac, j * m, m); //fjac + j * m;
+                    dvec[ifree[j]] = new DelimitedArrayOfDouble(fjac, j * m, m); //fjac + j * m;
                     hasAnalyticalDeriv = 1;
                 }
                 else if (dside != null && ddebug[ifree[j]] == 1)
                 {
                     /* Numerical and analytical derivatives as a debug cross-check */
                     // reference a range of values inside larger array fjac (pointer arithmatic work-around)
-                    dvec[ifree[j]] = new DelimitedArray<double>(fjac, j * m, m); //fjac + j * m; 
+                    dvec[ifree[j]] = new DelimitedArrayOfDouble(fjac, j * m, m); //fjac + j * m; 
                     hasAnalyticalDeriv = 1;
                     hasNumericalDeriv = 1;
                     hasDebugDeriv = 1;
@@ -1255,7 +1254,20 @@ namespace MPFitLib
                then compute them first. */
             if (hasAnalyticalDeriv != 0)
             {
-                iflag = funct(x, wa, dvec, priv);
+                // DJC 2013-06-07 - performing this work-around to hide the implementation of DelimitedArrayOfDouble from the user-impleneted mp_func
+                // alternative is to program to IList and have DelimitedArrayOfDouble implement that, but casting can hurt performance everywhere
+                // prefer to only add memory/performance burden if analytical derivatives are desired (and can be further optimized in the future, depending on requirements)
+                double[][] localDvec = new double[dvec.Length][];
+                for (int dveci = 0; dveci < dvec.Length; dveci++)
+                {
+                    localDvec[dveci] = new double[dvec[dveci].Count];
+                    for (int dvecii = 0; dvecii < localDvec[dveci].Length; dvecii++)
+                    {
+                        localDvec[dveci][dvecii] = dvec[dveci][dvecii];
+                    }
+                }
+
+                iflag = funct(x, wa, localDvec, priv);
                 //iflag = funct(m, npar, x, wa, dvec, priv);
                 if (nfev != 0) nfev = nfev + 1;  //todo: correct translation from C?
                 if (iflag < 0) goto DONE;
@@ -1497,7 +1509,7 @@ namespace MPFitLib
              */
             ij = 0;
             // references a range of values inside larger array a (pointer arithmatic work-around)
-            var aTemp = new DelimitedArray<double>(a, ij, n);
+            var aTemp = new DelimitedArrayOfDouble(a, ij, n);
             for (j = 0; j < n; j++)
             {
                 aTemp.SetOffset(ij);
@@ -2188,7 +2200,7 @@ namespace MPFitLib
 
         /************************enorm.c*************************/
 
-        private static double mp_enorm(int n, IList<double> x)
+        private static double mp_enorm(int n, double[] x)
         {
             /*
              *     **********
@@ -2219,6 +2231,138 @@ namespace MPFitLib
              *	n is a positive integer input variable.
              *
              *	x is an input array of length n.
+             *
+             *     subprograms called
+             *
+             *	fortran-supplied ... dabs,dsqrt
+             *
+             *     argonne national laboratory. minpack project. march 1980.
+             *     burton s. garbow, kenneth e. hillstrom, jorge j. more
+             *
+             *     **********
+             */
+            int i;
+            double agiant, floatn, s1, s2, s3, xabs, x1max, x3max;
+            double ans, temp;
+            double rdwarf = MP_RDWARF;
+            double rgiant = MP_RGIANT;
+            const double zero = 0.0;
+            const double one = 1.0;
+
+            s1 = zero;
+            s2 = zero;
+            s3 = zero;
+            x1max = zero;
+            x3max = zero;
+            floatn = n;
+            agiant = rgiant / floatn;
+
+            for (i = 0; i < n; i++)
+            {
+                xabs = Math.Abs(x[i]);
+                if ((xabs > rdwarf) && (xabs < agiant))
+                {
+                    /*
+                     *	    sum for intermediate components.
+                     */
+                    s2 += xabs * xabs;
+                    continue;
+                }
+
+                if (xabs > rdwarf)
+                {
+                    /*
+                     *	       sum for large components.
+                     */
+                    if (xabs > x1max)
+                    {
+                        temp = x1max / xabs;
+                        s1 = one + s1 * temp * temp;
+                        x1max = xabs;
+                    }
+                    else
+                    {
+                        temp = xabs / x1max;
+                        s1 += temp * temp;
+                    }
+                    continue;
+                }
+                /*
+                 *	       sum for small components.
+                 */
+                if (xabs > x3max)
+                {
+                    temp = x3max / xabs;
+                    s3 = one + s3 * temp * temp;
+                    x3max = xabs;
+                }
+                else
+                {
+                    if (xabs != zero)
+                    {
+                        temp = xabs / x3max;
+                        s3 += temp * temp;
+                    }
+                }
+            }
+            /*
+             *     calculation of norm.
+             */
+            if (s1 != zero)
+            {
+                temp = s1 + (s2 / x1max) / x1max;
+                ans = x1max * Math.Sqrt(temp);
+                return (ans);
+            }
+            if (s2 != zero)
+            {
+                if (s2 >= x3max)
+                    temp = s2 * (one + (x3max / s2) * (x3max * s3));
+                else
+                    temp = x3max * ((s2 / x3max) + (x3max * s3));
+                ans = Math.Sqrt(temp);
+            }
+            else
+            {
+                ans = x3max * Math.Sqrt(s3);
+            }
+            return (ans);
+            /*
+             *     last card of function enorm.
+             */
+        }
+
+        private static double mp_enorm(int n, DelimitedArrayOfDouble x)
+        {
+            /*
+             *     **********
+             *
+             *     function enorm (duplicate implemnentation of mp_enorm(int n, double[] x) for use with DelimitedArrayOfDouble sub-arrays)
+             *
+             *     given an n-vector x, this function calculates the
+             *     euclidean norm of x.
+             *
+             *     the euclidean norm is computed by accumulating the sum of
+             *     squares in three different sums. the sums of squares for the
+             *     small and large components are scaled so that no overflows
+             *     occur. non-destructive underflows are permitted. underflows
+             *     and overflows do not occur in the computation of the unscaled
+             *     sum of squares for the intermediate components.
+             *     the definitions of small, intermediate and large components
+             *     depend on two constants, rdwarf and rgiant. the main
+             *     restrictions on these constants are that rdwarf**2 not
+             *     underflow and rgiant**2 not overflow. the constants
+             *     given here are suitable for every known computer.
+             *
+             *     the function statement is
+             *
+             *	double precision function enorm(n,x)
+             *
+             *     where
+             *
+             *	n is a positive integer input variable.
+             *
+             *	x is an input DelimitedArrayOfDouble of length n
              *
              *     subprograms called
              *
