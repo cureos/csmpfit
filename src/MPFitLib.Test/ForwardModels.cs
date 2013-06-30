@@ -13,11 +13,10 @@
  */
 
 /* Test routines for MPFit library
-   $Id: TestMPFit.cs,v 1.1 2010/05/04 dcuccia Exp $
+   $Id: TestMPFit.cs,v 1.2 2013/06/27 dcuccia Exp $
 */
 
 using System;
-using System.Collections.Generic;
 
 namespace MPFitLib.Test
 {
@@ -34,7 +33,7 @@ namespace MPFitLib.Test
          *
          * RETURNS: error code (0 = success)
          */
-        public static int LinFunc(double[] p, double[] dy, IList<double>[] dvec, object vars)
+        public static int LinFunc(double[] p, double[] dy, double[][] dvec, object vars)
         {
             int i;
             double[] x, y, ey;
@@ -66,7 +65,7 @@ namespace MPFitLib.Test
         *
         * RETURNS: error code (0 = success)
         */
-        public static int QuadFunc(double[] p, double[] dy, IList<double>[] dvec, object vars)
+        public static int QuadFunc(double[] p, double[] dy, double[][] dvec, object vars)
         {
             int i;
             double[] x, y, ey;
@@ -98,7 +97,7 @@ namespace MPFitLib.Test
          *
          * RETURNS: error code (0 = success)
          */
-        public static int GaussFunc(double[] p, double[] dy, IList<double>[] dvec, object vars)
+        public static int GaussFunc(double[] p, double[] dy, double[][] dvec, object vars)
         {
             int i;
             CustomUserVariable v = (CustomUserVariable)vars;
