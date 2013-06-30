@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Diagnostics;
 
 namespace MPFitLib
 {
@@ -1275,9 +1276,9 @@ namespace MPFitLib
 
             if (hasDebugDeriv != 0)
             {
-                Console.Write("FJAC DEBUG BEGIN\n");
-                //Console.Write("#  %10s %10s %10s %10s %10s %10s\n",
-                Console.Write("#  {0} {1} {2} {3} {4} {5}\n",
+                Debug.Print("FJAC DEBUG BEGIN\n");
+                //Debug.Print("#  %10s %10s %10s %10s %10s %10s\n",
+                Debug.Print("#  {0} {1} {2} {3} {4} {5}\n",
                    "IPNT", "FUNC", "DERIV_U", "DERIV_N", "DIFF_ABS", "DIFF_REL");
             }
 
@@ -1293,7 +1294,7 @@ namespace MPFitLib
                     /* Check for debugging */
                     if (debug != 0)
                     {
-                        Console.Write("FJAC PARM {0}\n", ifree[j]);
+                        Debug.Print("FJAC PARM {0}\n", ifree[j]);
                     }
 
                     /* Skip parameters already done by user-computed partials */
@@ -1348,8 +1349,8 @@ namespace MPFitLib
                                 if ((da == 0 && dr == 0 && (fjold != 0 || fjac[ij] != 0)) ||
                                     ((da != 0 || dr != 0) && (Math.Abs(fjold - fjac[ij]) > da + Math.Abs(fjold) * dr)))
                                 {
-                                    //Console.Write("   %10d %10.4g %10.4g %10.4g %10.4g %10.4g\n",
-                                    Console.Write("   {0} {1} {2} {3} {4} {5}\n",
+                                    //Debug.Print("   %10d %10.4g %10.4g %10.4g %10.4g %10.4g\n",
+                                    Debug.Print("   {0} {1} {2} {3} {4} {5}\n",
                                        i, fvec[i], fjold, fjac[ij], fjold - fjac[ij],
                                        (fjold == 0) ? (0) : ((fjold - fjac[ij]) / fjold));
                                 }
@@ -1390,8 +1391,8 @@ namespace MPFitLib
                                 if ((da == 0 && dr == 0 && (fjold != 0 || fjac[ij] != 0)) ||
                                     ((da != 0 || dr != 0) && (Math.Abs(fjold - fjac[ij]) > da + Math.Abs(fjold) * dr)))
                                 {
-                                    //Console.Write("   %10d %10.4g %10.4g %10.4g %10.4g %10.4g\n",
-                                    Console.Write("   {0} {1} {2} {3} {4} {5}\n",
+                                    //Debug.Print("   %10d %10.4g %10.4g %10.4g %10.4g %10.4g\n",
+                                    Debug.Print("   {0} {1} {2} {3} {4} {5}\n",
                                        i, fvec[i], fjold, fjac[ij], fjold - fjac[ij],
                                        (fjold == 0) ? (0) : ((fjold - fjac[ij]) / fjold));
                                 }
@@ -1404,7 +1405,7 @@ namespace MPFitLib
 
             if (hasDebugDeriv != 0)
             {
-                Console.Write("FJAC DEBUG END\n");
+                Debug.Print("FJAC DEBUG END\n");
             }
 
         DONE:
@@ -2573,9 +2574,9 @@ namespace MPFitLib
 #if IF0
           for (j=0; j<n; j++) {
             for (i=0; i<n; i++) {
-              Console.Write("{0} ", r[j*ldr+i]);
+              Debug.Print("{0} ", r[j*ldr+i]);
             }
-            Console.Write("\n");
+            Debug.Print("\n");
           }
 #endif
 
@@ -2670,9 +2671,9 @@ namespace MPFitLib
 #if IF0
           for (j=0; j<n; j++) {
             for (i=0; i<n; i++) {
-              Console.Write("%f ", r[j*ldr+i]);
+              Debug.Print("%f ", r[j*ldr+i]);
             }
-            Console.Write("\n");
+            Debug.Print("\n");
           }
 #endif
 

@@ -17,6 +17,7 @@
 */
 
 using System;
+using System.Diagnostics;
 
 namespace MPFitLib.Test
 {
@@ -36,8 +37,6 @@ namespace MPFitLib.Test
                 TestGaussFit();
                 TestGaussFix();
             }
-
-            Console.ReadKey();
         }
 
         /* Test harness routine, which contains test data, invokes mpfit() */
@@ -75,7 +74,7 @@ namespace MPFitLib.Test
             /* Call fitting function for 10 data points and 2 parameters */
             status = MPFit.Solve(ForwardModels.LinFunc, 10, 2, p, null, null, v, ref result);
 
-            Console.Write("*** TestLinFit status = {0}\n", status);
+            Debug.Print("*** TestLinFit status = {0}\n", status);
             PrintResult(p, pactual, result);
 
             return 0;
@@ -113,7 +112,7 @@ namespace MPFitLib.Test
             /* Call fitting function for 10 data points and 3 parameters */
             status = MPFit.Solve(ForwardModels.QuadFunc, 10, 3, p, null, null, v, ref result);
 
-            Console.Write("*** TestQuadFit status = {0}\n", status);
+            Debug.Print("*** TestQuadFit status = {0}\n", status);
             PrintResult(p, pactual, result);
 
             return 0;
@@ -161,7 +160,7 @@ namespace MPFitLib.Test
                parameter fixed) */
             status = MPFit.Solve(ForwardModels.QuadFunc, 10, 3, p, pars, null, v, ref result);
 
-            Console.Write("*** TestQuadFix status = {0}\n", status);
+            Debug.Print("*** TestQuadFix status = {0}\n", status);
 
             PrintResult(p, pactual, result);
 
@@ -207,7 +206,7 @@ namespace MPFitLib.Test
                parameters fixed) */
             status = MPFit.Solve(ForwardModels.GaussFunc, 10, 4, p, pars, null, v, ref result);
 
-            Console.Write("*** TestGaussFit status = {0}\n", status);
+            Debug.Print("*** TestGaussFit status = {0}\n", status);
             PrintResult(p, pactual, result);
 
             return 0;
@@ -267,7 +266,7 @@ namespace MPFitLib.Test
                parameters fixed) */
             status = MPFit.Solve(ForwardModels.GaussFunc, 10, 4, p, pars, null, v, ref result);
 
-            Console.Write("*** TestGaussFix status = {0}\n", status);
+            Debug.Print("*** TestGaussFix status = {0}\n", status);
             PrintResult(p, pactual, result);
 
             return 0;
@@ -280,19 +279,19 @@ namespace MPFitLib.Test
 
             if (x == null) return;
 
-            Console.Write("  CHI-SQUARE = {0}    ({1} DOF)\n",
+            Debug.Print("  CHI-SQUARE = {0}    ({1} DOF)\n",
              result.bestnorm, result.nfunc - result.nfree);
-            Console.Write("        NPAR = {0}\n", result.npar);
-            Console.Write("       NFREE = {0}\n", result.nfree);
-            Console.Write("     NPEGGED = {0}\n", result.npegged);
-            Console.Write("       NITER = {0}\n", result.niter);
-            Console.Write("        NFEV = {0}\n", result.nfev);
-            Console.Write("\n");
+            Debug.Print("        NPAR = {0}\n", result.npar);
+            Debug.Print("       NFREE = {0}\n", result.nfree);
+            Debug.Print("     NPEGGED = {0}\n", result.npegged);
+            Debug.Print("       NITER = {0}\n", result.niter);
+            Debug.Print("        NFEV = {0}\n", result.nfev);
+            Debug.Print("\n");
             if (xact != null)
             {
                 for (i = 0; i < result.npar; i++)
                 {
-                    Console.Write("  P[{0}] = {1} +/- {2}     (ACTUAL {3})\n",
+                    Debug.Print("  P[{0}] = {1} +/- {2}     (ACTUAL {3})\n",
                        i, x[i], result.xerror[i], xact[i]);
                 }
             }
@@ -300,7 +299,7 @@ namespace MPFitLib.Test
             {
                 for (i = 0; i < result.npar; i++)
                 {
-                    Console.Write("  P[{0}] = {1} +/- {2}\n",
+                    Debug.Print("  P[{0}] = {1} +/- {2}\n",
                        i, x[i], result.xerror[i]);
                 }
             }
