@@ -40,3 +40,4 @@ obj/
 *.[Pp]ublish.xml
 _ReSharper*\*
 glob:*.orig
+[Bb]uild
