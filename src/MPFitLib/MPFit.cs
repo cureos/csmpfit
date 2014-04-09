@@ -1263,9 +1263,9 @@ namespace MPFitLib
 
             if (hasDebugDeriv != 0)
             {
-                Console.Write("FJAC DEBUG BEGIN\n");
+                System.Diagnostics.Debug.WriteLine("FJAC DEBUG BEGIN");
                 //Console.Write("#  %10s %10s %10s %10s %10s %10s\n",
-                Console.Write("#  {0} {1} {2} {3} {4} {5}\n",
+                System.Diagnostics.Debug.WriteLine("#  {0} {1} {2} {3} {4} {5}",
                    "IPNT", "FUNC", "DERIV_U", "DERIV_N", "DIFF_ABS", "DIFF_REL");
             }
 
@@ -1281,7 +1281,7 @@ namespace MPFitLib
                     /* Check for debugging */
                     if (debug != 0)
                     {
-                        Console.Write("FJAC PARM {0}\n", ifree[j]);
+                        System.Diagnostics.Debug.WriteLine("FJAC PARM {0}", ifree[j]);
                     }
 
                     /* Skip parameters already done by user-computed partials */
@@ -1337,7 +1337,7 @@ namespace MPFitLib
                                     ((da != 0 || dr != 0) && (Math.Abs(fjold - fjac[ij]) > da + Math.Abs(fjold) * dr)))
                                 {
                                     //Console.Write("   %10d %10.4g %10.4g %10.4g %10.4g %10.4g\n",
-                                    Console.Write("   {0} {1} {2} {3} {4} {5}\n",
+                                    System.Diagnostics.Debug.WriteLine("   {0} {1} {2} {3} {4} {5}",
                                        i, fvec[i], fjold, fjac[ij], fjold - fjac[ij],
                                        (fjold == 0) ? (0) : ((fjold - fjac[ij]) / fjold));
                                 }
@@ -1379,7 +1379,7 @@ namespace MPFitLib
                                     ((da != 0 || dr != 0) && (Math.Abs(fjold - fjac[ij]) > da + Math.Abs(fjold) * dr)))
                                 {
                                     //Console.Write("   %10d %10.4g %10.4g %10.4g %10.4g %10.4g\n",
-                                    Console.Write("   {0} {1} {2} {3} {4} {5}\n",
+                                    System.Diagnostics.Debug.WriteLine("   {0} {1} {2} {3} {4} {5}",
                                        i, fvec[i], fjold, fjac[ij], fjold - fjac[ij],
                                        (fjold == 0) ? (0) : ((fjold - fjac[ij]) / fjold));
                                 }
@@ -1392,7 +1392,7 @@ namespace MPFitLib
 
             if (hasDebugDeriv != 0)
             {
-                Console.Write("FJAC DEBUG END\n");
+                System.Diagnostics.Debug.WriteLine("FJAC DEBUG END");
             }
 
         DONE:
