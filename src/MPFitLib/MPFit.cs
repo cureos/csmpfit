@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 
 namespace MPFitLib
 {
@@ -306,10 +307,14 @@ namespace MPFitLib
         /// Upon return, result will be updated, and
         /// any of the non-null arrays will be filled.
         /// </param>
+        /// <param name="logger">
+        /// (Text) stream writer to which to write debug information. If
+        /// null, no debug information is output.
+        /// </param>
         /// <returns></returns>
         public static int Solve(mp_func funct, int m, int npar,
               double[] xall, mp_par[] pars, mp_config config, object prv,
-              ref mp_result result)
+              ref mp_result result, TextWriter logger = null)
         {
             mp_config conf = new mp_config();
             int i, j, info, iflag, nfree, npegged, iter;
@@ -566,7 +571,7 @@ namespace MPFitLib
             iflag = mp_fdjac2(funct, m, nfree, ifree, npar, xnew, fvec, fjac, ldfjac,
                       conf.epsfcn, wa4, prv, ref nfev,
                       step, dstep, mpside, qulim, ulim,
-                      ddebug, ddrtol, ddatol);
+                      ddebug, ddrtol, ddatol, logger);
 
             if (iflag < 0)
             {
@@ -1119,7 +1124,7 @@ namespace MPFitLib
                   double[] wa, object priv, ref int nfev,
                   double[] step, double[] dstep, int[] dside,
                   int[] qulimited, double[] ulimit,
-                  int[] ddebug, double[] ddrtol, double[] ddatol)
+                  int[] ddebug, double[] ddrtol, double[] ddatol, TextWriter logger)
         {
             /*
             *     **********
@@ -1263,9 +1268,9 @@ namespace MPFitLib
 
             if (hasDebugDeriv != 0)
             {
-                System.Diagnostics.Debug.WriteLine("FJAC DEBUG BEGIN");
+                if (logger != null) logger.Write("FJAC DEBUG BEGIN\n");
                 //Console.Write("#  %10s %10s %10s %10s %10s %10s\n",
-                System.Diagnostics.Debug.WriteLine("#  {0} {1} {2} {3} {4} {5}",
+                if (logger != null) logger.Write("#  {0} {1} {2} {3} {4} {5}\n",
                    "IPNT", "FUNC", "DERIV_U", "DERIV_N", "DIFF_ABS", "DIFF_REL");
             }
 
@@ -1281,7 +1286,7 @@ namespace MPFitLib
                     /* Check for debugging */
                     if (debug != 0)
                     {
-                        System.Diagnostics.Debug.WriteLine("FJAC PARM {0}", ifree[j]);
+                        if (logger != null) logger.Write("FJAC PARM {0}\n", ifree[j]);
                     }
 
                     /* Skip parameters already done by user-computed partials */
@@ -1337,7 +1342,7 @@ namespace MPFitLib
                                     ((da != 0 || dr != 0) && (Math.Abs(fjold - fjac[ij]) > da + Math.Abs(fjold) * dr)))
                                 {
                                     //Console.Write("   %10d %10.4g %10.4g %10.4g %10.4g %10.4g\n",
-                                    System.Diagnostics.Debug.WriteLine("   {0} {1} {2} {3} {4} {5}",
+                                    if (logger != null) logger.Write("   {0} {1} {2} {3} {4} {5}\n",
                                        i, fvec[i], fjold, fjac[ij], fjold - fjac[ij],
                                        (fjold == 0) ? (0) : ((fjold - fjac[ij]) / fjold));
                                 }
@@ -1379,7 +1384,7 @@ namespace MPFitLib
                                     ((da != 0 || dr != 0) && (Math.Abs(fjold - fjac[ij]) > da + Math.Abs(fjold) * dr)))
                                 {
                                     //Console.Write("   %10d %10.4g %10.4g %10.4g %10.4g %10.4g\n",
-                                    System.Diagnostics.Debug.WriteLine("   {0} {1} {2} {3} {4} {5}",
+                                    if (logger != null) logger.Write("   {0} {1} {2} {3} {4} {5}\n",
                                        i, fvec[i], fjold, fjac[ij], fjold - fjac[ij],
                                        (fjold == 0) ? (0) : ((fjold - fjac[ij]) / fjold));
                                 }
@@ -1392,7 +1397,7 @@ namespace MPFitLib
 
             if (hasDebugDeriv != 0)
             {
-                System.Diagnostics.Debug.WriteLine("FJAC DEBUG END");
+                if (logger != null) logger.Write("FJAC DEBUG END\n");
             }
 
         DONE:
