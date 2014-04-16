@@ -67,9 +67,9 @@
     <Compile Include="TestMPFit.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MPFitLib\MPFitLib.csproj">
-      <Project>{821F51BA-365C-42E2-8545-3E250AFADBAE}</Project>
-      <Name>MPFitLib</Name>
+    <ProjectReference Include="..\MPFitLib\MPFitLib.PCL.csproj">
+      <Project>{90CDCC87-207C-420B-9894-A7E30172E5CA}</Project>
+      <Name>MPFitLib.PCL</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
