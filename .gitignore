@@ -28,6 +28,7 @@ syntax: glob
 *.sbr
 *.scc
 *.sig
+*.lock.json
 [Bb]in
 [Cc]lient[Bb]in
 [Dd]ebug*/
@@ -41,3 +42,5 @@ obj/
 _ReSharper*\*
 glob:*.orig
 [Bb]uild
+.vs
+UpgradeLog.htm

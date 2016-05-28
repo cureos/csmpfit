@@ -67,12 +67,6 @@
     <Compile Include="TestMPFit.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MPFitLib\MPFitLib.PCL.csproj">
-      <Project>{90CDCC87-207C-420B-9894-A7E30172E5CA}</Project>
-      <Name>MPFitLib.PCL</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include="Microsoft.Net.Client.3.5">
       <Visible>False</Visible>
       <ProductName>.NET Framework 3.5 SP1 Client Profile</ProductName>
@@ -91,6 +85,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\MPFitLib.NET20\MPFitLib.NET20.csproj">
+      <Project>{58843302-1da2-41e9-bc81-6d6a5151f7dd}</Project>
+      <Name>MPFitLib.NET20</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
