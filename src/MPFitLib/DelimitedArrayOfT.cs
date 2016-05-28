@@ -130,7 +130,7 @@ namespace MPFitLib
 
         public bool Contains(T item)
         {
-            return ((IList<T>)this).Contains(item);
+            return IndexOf(item) >= 0;
         }
 
         public void CopyTo(T[] array, int arrayIndex)
