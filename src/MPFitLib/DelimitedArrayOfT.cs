@@ -21,7 +21,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace MPFitLib
 {
@@ -107,14 +106,9 @@ namespace MPFitLib
 
         public int IndexOf(T item)
         {
-            var query =
-                (from i in Enumerable.Range(_offset, _count)
-                 where _array[i].Equals(item)
-                 select i);
-
-            foreach (var i in query)
+            for (var i = 0; i < _count; ++i)
             {
-                return i - _offset;
+                if (_array[i + _offset].Equals(item)) return i;
             }
 
             return -1;
@@ -136,7 +130,7 @@ namespace MPFitLib
 
         public bool Contains(T item)
         {
-            return ((IEnumerable<T>)this).Contains(item);
+            return ((IList<T>)this).Contains(item);
         }
 
         public void CopyTo(T[] array, int arrayIndex)
