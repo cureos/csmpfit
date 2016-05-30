@@ -48,7 +48,7 @@ namespace MPFitLib.Test
 
             for (i = 0; i < dy.Length; i++)
             {
-                f = p[0] - p[1] * x[i];     /* Linear fit function */
+                f = p[0] + p[1] * x[i];     /* Linear fit function */
                 dy[i] = (y[i] - f) / ey[i];
             }
 
