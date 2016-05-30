@@ -1,6 +1,6 @@
 ﻿{
   "packOptions": {
-    "licenseUrl": "",
+    "licenseUrl": "http://csmpfit.codeplex.com/license",
     "owners": [ "David J. Cuccia", "Anders Gustafsson" ],
     "projectUrl": "https://csmpfit.codeplex.com/",
     "repository": {
@@ -14,15 +14,22 @@
 
   "authors": [ "David J. Cuccia" ],
   "copyright": "Copyright (c) 2011-2016 David J. Cuccia, Ph.D.; Anders Gustafsson, Ph.D.",
-  "description": "This is a C# port of the C-based mpfit Levenberg Marquardt solver at Argonne National Labs for .NET 2.0 and higher or any platform target compatible with PCL Profile 328 or .NET Core Level 1.0",
+  "description": "This is a C# port of the C-based MPFIT Levenberg-Marquardt solver at Argonne National Labs for .NET 2.0 and higher, or any platform target compatible with PCL Profile 328 or .NET Core Level 1.0",
   "language": "en-us",
   "title": "Portable C# MPFIT Library",
-  "version": "1.0.0-*",
+  "version": "1.1.0-*",
 
   "buildOptions": {
-    "excludeFiles": "Properties/AssemblyInfo.cs",
-    "keyFile": "MPFit.snk",
-    "outputName": "csmpfit",
+    "compile": [
+      "../MPFitLib/DelimitedArrayOfT.cs",
+      "../MPFitLib/mp_config.cs",
+      "../MPFitLib/mp_func.cs",
+      "../MPFitLib/mp_par.cs",
+      "../MPFitLib/mp_result.cs",
+      "../MPFitLib/MPFit.cs"
+    ],
+    "keyFile": "../MPFitLib/MPFit.snk",
+    "outputName": "MPFitLib",
     "publicSign": true,
     "xmlDoc": true
   },
