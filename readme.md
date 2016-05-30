@@ -1,6 +1,7 @@
+[![Join the chat at https://gitter.im/cureos/csmpfit](https://badges.gitter.im/cureos/csmpfit.svg)](https://gitter.im/cureos/csmpfit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 # Project Description
 
-[![Join the chat at https://gitter.im/cureos/csmpfit](https://badges.gitter.im/cureos/csmpfit.svg)](https://gitter.im/cureos/csmpfit?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 A C# port of the C-based [mpfit Levenberg Marquardt solver](http://cow.physics.wisc.edu/~craigm/idl/cmpfit.html) at Argonne National Labs, including desktop .NET and Portable Class Libraries.
 
 # Credits
