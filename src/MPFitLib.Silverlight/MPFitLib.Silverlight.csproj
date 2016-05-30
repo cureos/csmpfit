@@ -75,7 +75,9 @@
     <Compile Include="..\MPFitLib\mp_result.cs">
       <Link>mp_result.cs</Link>
     </Compile>
-    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="..\MPFitLib\Properties\AssemblyInfo.cs">
+      <Link>Properties\AssemblyInfo.cs</Link>
+    </Compile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\MPFitLib\MPFit.snk">
