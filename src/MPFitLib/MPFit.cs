@@ -375,7 +375,7 @@ namespace MPFitLib
                 if (config.stepfactor > 0) conf.stepfactor = config.stepfactor;
                 if (config.nprint >= 0) conf.nprint = config.nprint;
                 if (config.epsfcn > 0) conf.epsfcn = config.epsfcn;
-                if (config.maxiter > 0) conf.maxiter = config.maxiter;
+                if (config.maxiter >= 0) conf.maxiter = config.maxiter;
                 if (config.douserscale != 0) conf.douserscale = config.douserscale;
                 if (config.covtol > 0) conf.covtol = config.covtol;
                 if (config.nofinitecheck > 0) conf.nofinitecheck = config.nofinitecheck;
