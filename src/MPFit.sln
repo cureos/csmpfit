@@ -1,13 +1,15 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
+# Visual Studio 15
+VisualStudioVersion = 15.0.26606.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MPFitLib.NET20", "MPFitLib.NET20\MPFitLib.NET20.csproj", "{58843302-1DA2-41E9-BC81-6D6A5151F7DD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MPFitLib.Test", "MPFitLib.Test\MPFitLib.Test.csproj", "{D7AAC6D1-35D7-4613-8A13-9B786135C097}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MPFitLib.Silverlight", "MPFitLib.Silverlight\MPFitLib.Silverlight.csproj", "{A11547D5-B90D-4A29-BF9B-C03CC7159E3B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MPFitLib.NETStandard", "MPFitLib.NETStandard\MPFitLib.NETStandard.csproj", "{A520C61A-D94A-43EF-9456-ADA7D0DABF6B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{A11547D5-B90D-4A29-BF9B-C03CC7159E3B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A11547D5-B90D-4A29-BF9B-C03CC7159E3B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A11547D5-B90D-4A29-BF9B-C03CC7159E3B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A520C61A-D94A-43EF-9456-ADA7D0DABF6B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A520C61A-D94A-43EF-9456-ADA7D0DABF6B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A520C61A-D94A-43EF-9456-ADA7D0DABF6B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A520C61A-D94A-43EF-9456-ADA7D0DABF6B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
