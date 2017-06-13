@@ -25,7 +25,7 @@ namespace MPFitLib
 {
     public static class MPFit
     {
-        public const string MPFIT_VERSION = "1.1";
+        public const string MPFIT_VERSION = "1.1.1";
 
         /* Error codes */
         public const int MP_ERR_INPUT = 0;         /* General input parameter error */
