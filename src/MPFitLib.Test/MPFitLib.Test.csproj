@@ -87,9 +87,9 @@
     <None Include="app.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\MPFitLib.NET20\MPFitLib.NET20.csproj">
-      <Project>{58843302-1da2-41e9-bc81-6d6a5151f7dd}</Project>
-      <Name>MPFitLib.NET20</Name>
+    <ProjectReference Include="..\MPFitLib\MPFitLib.csproj">
+      <Project>{e51f1a1e-faec-49c2-9ae4-10fdc8ec1050}</Project>
+      <Name>MPFitLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
