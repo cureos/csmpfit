@@ -35,6 +35,7 @@ namespace MPFitLib.Test
                 TestQuadFix();
                 TestGaussFit();
                 TestGaussFix();
+                TestAnalyticDerivatives();
             }
 
             Console.ReadKey();
@@ -271,6 +272,33 @@ namespace MPFitLib.Test
             PrintResult(p, pactual, result);
 
             return 0;
+        }
+
+        private static void TestAnalyticDerivatives()
+        {
+            const double intercept = 7.0;
+            const double slope = -3.0;
+            var pactual = new double[] { intercept, slope };
+            var p = new double[] { 5.9, -1.1 };
+            var x = new double[] { -5, -3, -1, 0, 1, 3, 5 };
+            var y = new double[x.Length];
+
+
+            for (uint i = 0; i < x.Length; i++)
+            {
+                y[i] = intercept + slope * x[i];
+            }
+
+            var mpPar = new mp_par[] { new mp_par(), new mp_par() };
+            mpPar[0].side = 3;
+            mpPar[1].side = 3;
+
+            var result = new mp_result(2);
+
+            var status = MPFit.Solve(ForwardModels.LineFunc, x.Length, 2, p, mpPar, null, new LineFitData(x, y), ref result);
+
+            Console.Write("*** TestLineFit status = {0}\n", status);
+            PrintResult(p, pactual, result);
         }
 
         /* Simple routine to print the fit results */
