@@ -36,6 +36,7 @@ namespace MPFitLib.Test
                 TestGaussFit();
                 TestGaussFix();
                 TestAnalyticDerivatives();
+                TestGaussianWithDerivs();
             }
 
             Console.ReadKey();
@@ -109,7 +110,7 @@ namespace MPFitLib.Test
                 ey[i] = 0.2;       /* Data errors */
             }
 
-            CustomUserVariable v = new CustomUserVariable() { X = x, Y = y, Ey = ey };
+            CustomUserVariable v = new CustomUserVariable { X = x, Y = y, Ey = ey };
 
             /* Call fitting function for 10 data points and 3 parameters */
             status = MPFit.Solve(ForwardModels.QuadFunc, 10, 3, p, null, null, v, ref result);
@@ -147,7 +148,7 @@ namespace MPFitLib.Test
             mp_par[] pars = new mp_par[3] /* Parameter constraints */
                                 {
                                     new mp_par() , 
-                                    new mp_par(){isFixed = 1},  /* Fix parameter 1 */
+                                    new mp_par {isFixed = 1},  /* Fix parameter 1 */
                                     new mp_par()
                                 };             
 
@@ -156,7 +157,7 @@ namespace MPFitLib.Test
                 ey[i] = 0.2;
             }
 
-            CustomUserVariable v = new CustomUserVariable() {X = x, Y = y, Ey = ey};
+            CustomUserVariable v = new CustomUserVariable {X = x, Y = y, Ey = ey};
 
             /* Call fitting function for 10 data points and 3 parameters (1
                parameter fixed) */
@@ -202,7 +203,7 @@ namespace MPFitLib.Test
 
             for (i = 0; i < 10; i++) ey[i] = 0.5;
 
-            CustomUserVariable v = new CustomUserVariable() { X = x, Y = y, Ey = ey };
+            CustomUserVariable v = new CustomUserVariable { X = x, Y = y, Ey = ey };
 
             /* Call fitting function for 10 data points and 4 parameters (no
                parameters fixed) */
@@ -243,9 +244,9 @@ namespace MPFitLib.Test
 
             mp_par[] pars = new mp_par[4]/* Parameter constraints */
                                 {
-                                    new mp_par(){isFixed = 1},/* Fix parameters 0 and 2 */
+                                    new mp_par {isFixed = 1},/* Fix parameters 0 and 2 */
                                     new mp_par(), 
-                                    new mp_par(){isFixed = 1},
+                                    new mp_par {isFixed = 1},
                                     new mp_par()
                                 }; 
 
@@ -262,7 +263,7 @@ namespace MPFitLib.Test
                 ey[i] = 0.5;
             }
 
-            CustomUserVariable v = new CustomUserVariable() { X = x, Y = y, Ey = ey };
+            CustomUserVariable v = new CustomUserVariable { X = x, Y = y, Ey = ey };
 
             /* Call fitting function for 10 data points and 4 parameters (2
                parameters fixed) */
@@ -299,6 +300,51 @@ namespace MPFitLib.Test
 
             Console.Write("*** TestLineFit status = {0}\n", status);
             PrintResult(p, pactual, result);
+        }
+
+        private static void TestGaussianWithDerivs()
+        {
+            double[] x =
+            {
+                -1.7237128E+00, 1.8712276E+00, -9.6608055E-01,
+                -2.8394297E-01, 1.3416969E+00, 1.3757038E+00,
+                -1.3703436E+00, 4.2581975E-02, -1.4970151E-01,
+                8.2065094E-01
+            };
+            double[] y =
+            {
+                -4.4494256E-02, 8.7324673E-01, 7.4443483E-01,
+                4.7631559E+00, 1.7187297E-01, 1.1639182E-01,
+                1.5646480E+00, 5.2322268E+00, 4.2543168E+00,
+                6.2792623E-01
+            };
+            double[] ey = new double[10];
+            double[] p = { 0.0, 1.0, 1.0, 1.0 };        // Initial conditions
+           double[] pactual = { 0.0, 4.70, 0.0, 0.5 };  // Actual values used to make data
+            mp_par[] pars = {
+                new mp_par {side = 3, deriv_debug = 0},
+                new mp_par {side = 1, deriv_debug = 0},
+                new mp_par {side = 3, deriv_debug = 0},
+                new mp_par {side = 1, deriv_debug = 0}
+            };
+
+            mp_result result = new mp_result(4);
+
+            /* No constraints */
+
+            for (uint i = 0; i < 10; i++) ey[i] = 0.5;
+
+            CustomUserVariable v = new CustomUserVariable { X = x, Y = y, Ey = ey };
+
+            /* Call fitting function for 10 data points and 4 parameters (no
+               parameters fixed) */
+
+            var logger = new System.IO.StringWriter();
+            int status = MPFit.Solve(ForwardModels.GaussianFuncAndDerivs, 10, 4, p, pars, null, v, ref result, logger);
+
+            Console.Write("*** TestGaussFitWithDerivs status = {0}\n", status);
+            PrintResult(p, pactual, result);
+            Console.WriteLine(logger.ToString());
         }
 
         /* Simple routine to print the fit results */
