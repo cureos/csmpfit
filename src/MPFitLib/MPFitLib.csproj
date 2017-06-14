@@ -45,6 +45,7 @@
     <RepositoryType>git</RepositoryType>
     <Copyright>Copyright (c) 2011-2017 David J. Cuccia, Ph.D.; Anders Gustafsson, Cureos AB. All rights reserved.</Copyright>
     <PackageTags>mpfit levenbergmarquardt dataanalysis PCL netstandard dotnet</PackageTags>
+	<IncludeSymbols>true</IncludeSymbols>
   </PropertyGroup>
   
 </Project>
