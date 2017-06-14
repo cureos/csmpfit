@@ -1289,7 +1289,11 @@ namespace MPFitLib
                     }
 
                     /* Skip parameters already done by user-computed partials */
-                    if (dside != null && dsidei == 3) continue;
+                    if (dside != null && dsidei == 3)
+                    {
+                        ij += m;
+                        continue;
+                    }
 
                     temp = x[ifree[j]];
                     h = eps * Math.Abs(temp);
