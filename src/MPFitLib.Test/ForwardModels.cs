@@ -145,5 +145,62 @@ namespace MPFitLib.Test
             }
             return 0;
         }
+        public static int GaussianFuncAndDerivs(double[] p, double[] dy, IList<double>[] dvec, object vars)
+        {
+            CustomUserVariable v = (CustomUserVariable)vars;
+            double[] x, y, ey;
+            double sig2;
+
+            x = v.X;
+            y = v.Y;
+            ey = v.Ey;
+
+            sig2 = p[3] * p[3];
+            //var dvec1 = new double[dy.Length];
+            //var residuals = new double[dy.Length];
+
+            for (int i = 0; i < dy.Length; i++)
+            {
+                double xc = x[i] - p[2];
+                double exp = Math.Exp(-0.5 * xc * xc / sig2);
+                //residuals[i] = (y[i] - p[1] * exp - p[0]) / ey[i];
+                dy[i] = (y[i] - p[1] * exp - p[0]) / ey[i];
+
+                // NOTE: it would make sense to store the first 2 derivatives in vars since they don't change.
+                if (dvec != null)
+                {
+                    if (dvec[0] != null)
+                    {
+                        dvec[0][i] = -1.0 / ey[i];
+                    }
+                    if (dvec[1] != null)
+                    {
+                        //dvec1[i] = -exp / ey[i];
+                        dvec[1][i] = -exp / ey[i];
+                    }
+                    if (dvec[2] != null)
+                    {
+                        dvec[2][i] = -p[1] * xc * exp / (ey[i] * sig2);
+                    }
+                    if (dvec[3] != null)
+                    {
+                        dvec[3][i] = -p[1] * xc * xc * exp / (ey[i] * p[3] * sig2);
+                    }
+                }
+            }
+
+            // Array assignment rather than element-wise causes failure.
+            //dy = residuals;
+
+            // Array mismatch exception
+            //if (dvec != null)
+            //{
+            //  if (dvec[1] != null)
+            //  {
+            //      dvec[1] = dvec1;
+            //  }
+            //}
+            return 0;
+        }
     }
 }
