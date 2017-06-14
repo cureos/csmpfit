@@ -1207,7 +1207,6 @@ namespace MPFitLib
             int iflag = 0;
             double eps, h, temp;
             const double zero = 0.0;
-            IList<double>[] dvec;
             int hasAnalyticalDeriv = 0, hasNumericalDeriv = 0;
             int hasDebugDeriv = 0;
 
@@ -1216,7 +1215,7 @@ namespace MPFitLib
             ij = 0;
 
             //dvec = (double**)malloc(sizeof(double**) * npar);
-            dvec = new double[npar][];
+            var dvec = new DelimitedArray<double>[npar];
 
             //for (j = 0; j < npar; j++)
             //{
