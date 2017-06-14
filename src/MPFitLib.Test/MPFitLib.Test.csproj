@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="CustomUserVariable.cs" />
     <Compile Include="ForwardModels.cs" />
+    <Compile Include="LineFitData.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="TestMPFit.cs" />
   </ItemGroup>

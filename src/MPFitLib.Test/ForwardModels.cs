@@ -119,5 +119,31 @@ namespace MPFitLib.Test
 
             return 0;
         }
+
+        public static int LineFunc(double[] p, double[] dy, IList<double>[] dvec, object vars)
+        {
+            var lineFitData = (LineFitData)vars;
+            var x = lineFitData.X;
+            var y = lineFitData.Y;
+
+            for (int i = 0; i < x.Length; i++)
+            {
+                dy[i] = y[i] - (p[0] + p[1] * x[i]);
+                if (dvec != null)
+                {
+                    var dvec0 = dvec[0];
+                    var dvec1 = dvec[1];
+                    if (dvec0 != null)
+                    {
+                        dvec0[i] = -p[0];
+                    }
+                    if (dvec1 != null)
+                    {
+                        dvec1[i] = -x[i];
+                    }
+                }
+            }
+            return 0;
+        }
     }
 }
