@@ -1388,7 +1388,7 @@ namespace MPFitLib
                             /* Non-debug path for speed */
                             for (i = 0; i < m; i++, ij++)
                             {
-                                fjac[ij] = (wa2[ij] - wa[i]) / (2 * h); /* fjac[i+m*j] */
+                                fjac[ij] = (wa2[i] - wa[i]) / (2 * h); /* fjac[i+m*j] */
                             }
                         }
                         else
