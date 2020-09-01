@@ -15,6 +15,8 @@
 
 /* Main MPFit library routines (double precision) 
    $Id: MPFit.cs,v 1.1 2010/05/04 dcuccia Exp $
+   added changes from mpfit.h v1.14 2010/11/13
+    and mpfit.c v1.20 2010/11/13
  */
 
 using System;
@@ -25,7 +27,7 @@ namespace MPFitLib
 {
     public static class MPFit
     {
-        public const string MPFIT_VERSION = "1.1.1";
+        public const string MPFIT_VERSION = "1.2";
 
         /* Error codes */
         public const int MP_ERR_INPUT = 0;         /* General input parameter error */
@@ -1721,7 +1723,7 @@ namespace MPFitLib
             *     **********
             */
             int i, ij, ik, kk, j, jp1, k, kp1, l, nsing;
-            double cos, cotan, qtbpj, sin, sum, tan, temp;
+            double cosx, cotan, qtbpj, sinx, sum, tanx, temp;
             const double zero = 0.0;
             const double p25 = 0.25;
             const double p5 = 0.5;
@@ -1779,22 +1781,22 @@ namespace MPFitLib
                     if (Math.Abs(r[kk]) < Math.Abs(sdiag[k]))
                     {
                         cotan = r[kk] / sdiag[k];
-                        sin = p5 / Math.Sqrt(p25 + p25 * cotan * cotan);
-                        cos = sin * cotan;
+                        sinx = p5 / Math.Sqrt(p25 + p25 * cotan * cotan);
+                        cosx = sinx * cotan;
                     }
                     else
                     {
-                        tan = sdiag[k] / r[kk];
-                        cos = p5 / Math.Sqrt(p25 + p25 * tan * tan);
-                        sin = cos * tan;
+                        tanx = sdiag[k] / r[kk];
+                        cosx = p5 / Math.Sqrt(p25 + p25 * tanx * tanx);
+                        sinx = cosx * tanx;
                     }
                     /*
                      *	    compute the modified diagonal element of r and
                      *	    the modified element of ((q transpose)*b,0).
                      */
-                    r[kk] = cos * r[kk] + sin * sdiag[k];
-                    temp = cos * wa[k] + sin * qtbpj;
-                    qtbpj = -sin * wa[k] + cos * qtbpj;
+                    r[kk] = cosx * r[kk] + sinx * sdiag[k];
+                    temp = cosx * wa[k] + sinx * qtbpj;
+                    qtbpj = -sinx * wa[k] + cosx * qtbpj;
                     wa[k] = temp;
                     /*
                      *	    accumulate the tranformation in the row of s.
@@ -1805,8 +1807,8 @@ namespace MPFitLib
                         ik = kk + 1;
                         for (i = kp1; i < n; i++)
                         {
-                            temp = cos * r[ik] + sin * sdiag[i];
-                            sdiag[i] = -sin * r[ik] + cos * sdiag[i];
+                            temp = cosx * r[ik] + sinx * sdiag[i];
+                            sdiag[i] = -sinx * r[ik] + cosx * sdiag[i];
                             r[ik] = temp;
                             ik += 1; /* [i+ldr*k] */
                         }

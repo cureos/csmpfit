@@ -14,6 +14,7 @@
 
 /* Test routines for MPFit library
    $Id: TestMPFit.cs,v 1.1 2010/05/04 dcuccia Exp $
+   added changes from testmpfit.c,v 1.6 2010/11/13
 */
 
 using System;
@@ -55,7 +56,9 @@ namespace MPFitLib.Test
 		        4.5936475E+00};
 
             double[] ey = new double[10];
-            double[] p = { 1.0, 1.0 };           /* Initial conditions */
+            /*        y = a - b * x */
+            /*               a    b */
+            double[] p = { 1.0, 1.0 };           /* Parameter initial conditions */
             double[] pactual = { 3.20, 1.78 };   /* Actual values used to make data */
             //double[] perror = { 0.0, 0.0 };                   /* Returned parameter errors */
             int i;

@@ -14,6 +14,7 @@
 
 /* Test routines for MPFit library
    $Id: TestMPFit.cs,v 1.1 2010/05/04 dcuccia Exp $
+   added changes from testmpfit.c,v 1.6 2010/11/13
 */
 
 using System;
@@ -48,7 +49,7 @@ namespace MPFitLib.Test
 
             for (i = 0; i < dy.Length; i++)
             {
-                f = p[0] + p[1] * x[i];     /* Linear fit function */
+                f = p[0] + p[1] * x[i];     /* Linear fit function; note f = a - b*x */
                 dy[i] = (y[i] - f) / ey[i];
             }
 
@@ -93,6 +94,10 @@ namespace MPFitLib.Test
          * m - number of data points
          * n - number of parameters (4)
          * p - array of fit parameters 
+         *     p[0] = constant offset
+         *     p[1] = peak y value
+         *     p[2] = x centroid position
+         *     p[3] = gaussian sigma width
          * dy - array of residuals to be returned
          * CustomUserVariable - private data (struct vars_struct *)
          *
