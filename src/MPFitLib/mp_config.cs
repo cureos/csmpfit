@@ -15,6 +15,8 @@
 
 /* Main MPFit library routines (double precision) 
    $Id: MPFit.cs,v 1.1 2010/05/04 dcuccia Exp $
+   added changes from mpfit.h v1.14 2010/11/13
+    and mpfit.c v1.20 2010/11/13
  */
 
 namespace MPFitLib
@@ -22,23 +24,28 @@ namespace MPFitLib
     /* Definition of MPFIT configuration structure */
     public class mp_config
     {
-        public double ftol;    /* Relative chi-square convergence criterium */
-        public double xtol;    /* Relative parameter convergence criterium */
-        public double gtol;    /* Orthogonality convergence criterium */
-        public double epsfcn;  /* Finite derivative step size */
-        public double stepfactor; /* Initial step bound */
-        public double covtol;  /* Range tolerance for covariance calculation */
+        /* NOTE: the user may set the value explicitly; OR, if the passed
+   value is zero, then the "Default" value will be substituted by
+   mpfit(). */
+        public double ftol;    /* Relative chi-square convergence criterium Default: 1e-10 */
+        public double xtol;    /* Relative parameter convergence criterium  Default: 1e-10 */
+        public double gtol;    /* Orthogonality convergence criterium       Default: 1e-10 */
+        public double epsfcn;  /* Finite derivative step size               Default: MP_MACHEP0 */
+        public double stepfactor; /* Initial step bound                     Default: 100.0 */
+        public double covtol;  /* Range tolerance for covariance calculation Default: 1e-14 */
         public int maxiter;    /* Maximum number of iterations.  If maxiter == 0,
                              then basic error checking is done, and parameter
                              errors/covariances are estimated based on input
-                             parameter values, but no fitting iterations are done. */
-        public int maxfev;     /* Maximum number of function evaluations */
-        public int nprint;
+                             parameter values, but no fitting iterations are done.  
+		                     Default: 200 */
+        public int maxfev;     /* Maximum number of function evaluations, or 0 for no limit
+		            Default: 0 (no limit) */
+        public int nprint;     /* Default: 1 */
         public int douserscale;/* Scale variables by user values?
-		             1 = yes, user scale values in diag;
-		             0 = no, variables scaled internally */
+		            1 = yes, user scale values in diag;
+		            0 = no, variables scaled internally (Default) */
         public int nofinitecheck; /* Disable check for infinite quantities from user?
-			        0 = do not perform check
+			        0 = do not perform check (Default)
 			        1 = perform check 
 		             */
         //mp_iterproc iterproc; /* Placeholder pointer - must set to 0 */

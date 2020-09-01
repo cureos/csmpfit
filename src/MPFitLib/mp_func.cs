@@ -15,6 +15,8 @@
 
 /* Main MPFit library routines (double precision) 
    $Id: MPFit.cs,v 1.1 2010/05/04 dcuccia Exp $
+   added changes from mpfit.h v1.14 2010/11/13
+    and mpfit.c v1.20 2010/11/13
  */
 
 using System.Collections.Generic;
