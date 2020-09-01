@@ -19,6 +19,7 @@
     and mpfit.c v1.20 2010/11/13
    added changes from mpfit.h v1.16 2016/06/02
     and mpfit.c v1.24 2013/04/23
+   added changes from mpfit version 1.4 (no file versions provided)
  */
 
 namespace MPFitLib
