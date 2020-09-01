@@ -58,7 +58,7 @@ namespace MPFitLib.Test
 		        4.5936475E+00};
 
             double[] ey = new double[10];
-            /*        y = a - b * x */
+            /*        y = a + b * x */
             /*               a    b */
             double[] p = { 1.0, 1.0 };           /* Parameter initial conditions */
             double[] pactual = { 3.20, 1.78 };   /* Actual values used to make data */
