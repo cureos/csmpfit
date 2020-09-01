@@ -17,6 +17,8 @@
    $Id: MPFit.cs,v 1.1 2010/05/04 dcuccia Exp $
    added changes from mpfit.h v1.14 2010/11/13
     and mpfit.c v1.20 2010/11/13
+   added changes from mpfit.h v1.16 2016/06/02
+    and mpfit.c v1.24 2013/04/23
  */
 
 using System;
@@ -27,7 +29,9 @@ namespace MPFitLib
 {
     public static class MPFit
     {
-        public const string MPFIT_VERSION = "1.2";
+        public const string MPFIT_VERSION = "1.3";
+
+        public const int MP_NO_ITER = -1;
 
         /* Error codes */
         public const int MP_ERR_INPUT = 0;         /* General input parameter error */
@@ -320,7 +324,7 @@ namespace MPFitLib
         {
             mp_config conf = new mp_config();
             int i, j, info, iflag, nfree, npegged, iter;
-            int qanylim = 0, qanypegged = 0;
+            int qanylim = 0;
 
             int ij, jj, l;
             double actred, delta, dirder, fnorm, fnorm1, gnorm, orignorm;
@@ -351,6 +355,7 @@ namespace MPFitLib
             double[] fvec, qtf;
             double[] x, xnew, fjac, diag;
             double[] wa1, wa2, wa3, wa4;
+            DelimitedArray<double>[] dvectptr;
             int[] ipvt;
 
             int ldfjac;
@@ -377,18 +382,20 @@ namespace MPFitLib
                 if (config.stepfactor > 0) conf.stepfactor = config.stepfactor;
                 if (config.nprint >= 0) conf.nprint = config.nprint;
                 if (config.epsfcn > 0) conf.epsfcn = config.epsfcn;
-                if (config.maxiter >= 0) conf.maxiter = config.maxiter;
+                if (config.maxiter > 0) conf.maxiter = config.maxiter;
+                if (config.maxiter == MP_NO_ITER) conf.maxiter = 0;
                 if (config.douserscale != 0) conf.douserscale = config.douserscale;
                 if (config.covtol > 0) conf.covtol = config.covtol;
                 if (config.nofinitecheck > 0) conf.nofinitecheck = config.nofinitecheck;
                 conf.maxfev = config.maxfev;
             }
 
-            info = 0;
+            info = MP_ERR_INPUT; /* = 0 */
             iflag = 0;
             nfree = 0;
             npegged = 0;
 
+            /* Basic error checking */
             if (funct == null)
             {
                 return MP_ERR_FUNC;
@@ -526,6 +533,7 @@ namespace MPFitLib
             wa3 = new double[npar];
             wa4 = new double[m];
             ipvt = new int[npar];
+            dvectptr = new DelimitedArray<double>[npar];
 
             /* Evaluate user function with initial parameter values */
             iflag = funct(xall, fvec, null, prv);
@@ -573,7 +581,7 @@ namespace MPFitLib
             iflag = mp_fdjac2(funct, m, nfree, ifree, npar, xnew, fvec, fjac, ldfjac,
                       conf.epsfcn, wa4, prv, ref nfev,
                       step, dstep, mpside, qulim, ulim,
-                      ddebug, ddrtol, ddatol, logger);
+                      ddebug, ddrtol, ddatol, wa2, dvectptr, logger);
 
             if (iflag < 0)
             {
@@ -581,7 +589,6 @@ namespace MPFitLib
             }
 
             /* Determine if any of the parameters are pegged at the limits */
-            qanypegged = 0;
             if (qanylim != 0)
             {
                 for (j = 0; j < nfree; j++)
@@ -590,20 +597,22 @@ namespace MPFitLib
                     int upegged = (qulim[j] != 0 && (x[j] == ulim[j])) ? 1 : 0;
                     sum = 0;
 
+                    /* If the parameter is pegged at a limit, compute the gradient direction */
                     if (lpegged != 0 || upegged != 0)
                     {
-                        qanypegged = 1;
                         ij = j * ldfjac;
                         for (i = 0; i < m; i++, ij++)
                         {
                             sum += fvec[i] * fjac[ij];
                         }
                     }
+                    /* If pegged at lower limit and gradient is toward negative then reset gradient to zero */
                     if (lpegged != 0 && (sum > 0))
                     {
                         ij = j * ldfjac;
                         for (i = 0; i < m; i++, ij++) fjac[ij] = 0;
                     }
+                    /* If pegged at upper limit and gradient is toward positive then reset gradient to zero */
                     if (upegged != 0 && (sum < 0))
                     {
                         ij = j * ldfjac;
@@ -740,7 +749,11 @@ namespace MPFitLib
              */
             if (gnorm <= conf.gtol) info = MP_OK_DIR;
             if (info != 0) goto L300;
-            if (conf.maxiter == 0) goto L300;
+            if (conf.maxiter == 0)
+            {
+                info = MP_MAXITER;
+                goto L300;
+            }
 
             /*
              *	 rescale if necessary.
@@ -1126,7 +1139,8 @@ namespace MPFitLib
                   double[] wa, object priv, ref int nfev,
                   double[] step, double[] dstep, int[] dside,
                   int[] qulimited, double[] ulimit,
-                  int[] ddebug, double[] ddrtol, double[] ddatol, TextWriter logger)
+                  int[] ddebug, double[] ddrtol, double[] ddatol, 
+                  double[] wa2, DelimitedArray<double>[] dvec, TextWriter logger)
         {
             /*
             *     **********
@@ -1215,10 +1229,7 @@ namespace MPFitLib
             temp = mp_dmax1(epsfcn, MP_MACHEP0);
             eps = Math.Sqrt(temp);
             ij = 0;
-
-            //dvec = (double**)malloc(sizeof(double**) * npar);
-            var dvec = new DelimitedArray<double>[npar];
-
+            
             //for (j = 0; j < npar; j++)
             //{
             //    dvec[j] = 0;
@@ -1352,14 +1363,14 @@ namespace MPFitLib
                                        (fjold == 0) ? (0) : ((fjold - fjac[ij]) / fjold));
                                 }
                             }
-                        }
+                        } /* end debugging */
                     }
                     else
-                    {
+                    {  /* dside > 2 */
                         /* COMPUTE THE TWO-SIDED DERIVATIVE */
-                        for (i = 0; i < m; i++, ij++)
+                        for (i = 0; i < m; i++)
                         {
-                            fjac[ij] = wa[i];    /* Store temp data: fjac[i+m*j] */
+                            wa2[i] = wa[i];
                         }
 
                         /* Evaluate at x - h */
@@ -1371,9 +1382,9 @@ namespace MPFitLib
                         x[ifree[j]] = temp;
 
                         /* Now compute derivative as (f(x+h) - f(x-h))/(2h) */
-                        ij -= m;
                         if (debug == 0)
                         {
+                            /* Non-debug path for speed */
                             for (i = 0; i < m; i++, ij++)
                             {
                                 fjac[ij] = (fjac[ij] - wa[i]) / (2 * h); /* fjac[i+m*j] */
@@ -1381,10 +1392,11 @@ namespace MPFitLib
                         }
                         else
                         {
+                            /* Debug path for correctness */
                             for (i = 0; i < m; i++, ij++)
                             {
                                 double fjold = fjac[ij];
-                                fjac[ij] = (fjac[ij] - wa[i]) / (2 * h); /* fjac[i+m*j] */
+                                fjac[ij] = (wa2[i] - wa[i]) / (2 * h); /* fjac[i+m*j] */
                                 if ((da == 0 && dr == 0 && (fjold != 0 || fjac[ij] != 0)) ||
                                     ((da != 0 || dr != 0) && (Math.Abs(fjold - fjac[ij]) > da + Math.Abs(fjold) * dr)))
                                 {
@@ -1394,11 +1406,11 @@ namespace MPFitLib
                                        (fjold == 0) ? (0) : ((fjold - fjac[ij]) / fjold));
                                 }
                             }
-                        }
+                        } /* end debugging */
 
-                    }
+                    } /* if (dside > 2) */
                 }
-            }
+            } /* if (has_numerical_derivative) */
 
             if (hasDebugDeriv != 0)
             {

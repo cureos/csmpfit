@@ -17,6 +17,8 @@
    $Id: MPFit.cs,v 1.1 2010/05/04 dcuccia Exp $
    added changes from mpfit.h v1.14 2010/11/13
     and mpfit.c v1.20 2010/11/13
+   added changes from mpfit.h v1.16 2016/06/02
+    and mpfit.c v1.24 2013/04/23
  */
 
 namespace MPFitLib
@@ -33,7 +35,7 @@ namespace MPFitLib
         public double epsfcn;  /* Finite derivative step size               Default: MP_MACHEP0 */
         public double stepfactor; /* Initial step bound                     Default: 100.0 */
         public double covtol;  /* Range tolerance for covariance calculation Default: 1e-14 */
-        public int maxiter;    /* Maximum number of iterations.  If maxiter == 0,
+        public int maxiter;    /* Maximum number of iterations.  If maxiter == MP_NO_ITER,
                              then basic error checking is done, and parameter
                              errors/covariances are estimated based on input
                              parameter values, but no fitting iterations are done.  

@@ -17,6 +17,8 @@
    $Id: MPFit.cs,v 1.1 2010/05/04 dcuccia Exp $
    added changes from mpfit.h v1.14 2010/11/13
     and mpfit.c v1.20 2010/11/13
+   added changes from mpfit.h v1.16 2016/06/02
+    and mpfit.c v1.24 2013/04/23
  */
 
 using System.Collections.Generic;
