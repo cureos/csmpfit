@@ -19,6 +19,7 @@
     and mpfit.c v1.20 2010/11/13
    added changes from mpfit.h v1.16 2016/06/02
     and mpfit.c v1.24 2013/04/23
+   added changes from mpfit version 1.4 (no file versions provided)
  */
 
 using System;
@@ -29,7 +30,7 @@ namespace MPFitLib
 {
     public static class MPFit
     {
-        public const string MPFIT_VERSION = "1.3";
+        public const string MPFIT_VERSION = "1.4";
 
         public const int MP_NO_ITER = -1;
 
@@ -529,7 +530,7 @@ namespace MPFitLib
             ldfjac = m;
             diag = new double[npar];
             wa1 = new double[npar];
-            wa2 = new double[npar];
+            wa2 = new double[m]; /* Maximum usage is "m" in mpfit_fdjac2() */
             wa3 = new double[npar];
             wa4 = new double[m];
             ipvt = new int[npar];
@@ -1387,7 +1388,7 @@ namespace MPFitLib
                             /* Non-debug path for speed */
                             for (i = 0; i < m; i++, ij++)
                             {
-                                fjac[ij] = (fjac[ij] - wa[i]) / (2 * h); /* fjac[i+m*j] */
+                                fjac[ij] = (wa2[ij] - wa[i]) / (2 * h); /* fjac[i+m*j] */
                             }
                         }
                         else

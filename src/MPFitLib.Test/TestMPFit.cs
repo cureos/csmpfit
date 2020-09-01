@@ -16,6 +16,7 @@
    $Id: TestMPFit.cs,v 1.1 2010/05/04 dcuccia Exp $
    added changes from testmpfit.c,v 1.6 2010/11/13
    added changes from testmpfit.c,v 1.7 2012/01/23
+   added changes from cmpfit version 1.4 (file version not provided)
 */
 
 using System;
