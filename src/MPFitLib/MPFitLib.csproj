@@ -1,10 +1,11 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.0;net20;portable-net40+sl5+win8+wpa81+wp8</TargetFrameworks>
+    <TargetFrameworks>netstandard1.0;netstandard2.0;net20</TargetFrameworks>
     <AssemblyName>MPFitLib</AssemblyName>
     <RootNamespace>MPFitLib</RootNamespace>
-    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <Nullable>disable</Nullable>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MPFit.snk</AssemblyOriginatorKeyFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
@@ -21,31 +22,31 @@
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
   </PropertyGroup>
-
-  <PropertyGroup Condition="'$(TargetFramework)' == 'portable-net40+sl5+win8+wpa81+wp8'">
-    <TargetFrameworkIdentifier>.NETPortable</TargetFrameworkIdentifier>
-    <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
-    <TargetFrameworkProfile>Profile328</TargetFrameworkProfile>
-    <NugetTargetMoniker>.NETPortable,Version=v0.0,Profile=Profile328</NugetTargetMoniker>
-    <LanguageTargets>$(MSBuildExtensionsPath32)\Microsoft\Portable\$(TargetFrameworkVersion)\Microsoft.Portable.CSharp.targets</LanguageTargets>
-    <IncludeProjectPriFile>false</IncludeProjectPriFile>
-    <DefineConstants>$(DefineConstants);PCL</DefineConstants>
-  </PropertyGroup>
   
   <PropertyGroup>
+    <Company>Cureos</Company>
+    <Copyright>Copyright © 2011-2022 David J. Cuccia, Ph.D.; Anders Gustafsson, Cureos. All rights reserved.</Copyright>
+    <Description>C# MPFIT Library</Description>
+    <Product>csmpfit</Product>
+    <Title>MPFitLib</Title>
+    <Version>1.1.2</Version>
+    <NeutralLanguage>en</NeutralLanguage>
+  </PropertyGroup>
+
+  <PropertyGroup>
     <PackageId>csmpfit</PackageId>
-    <PackageVersion>1.1.1</PackageVersion>
-    <Title>Portable C# MPFIT Library</Title>
     <Authors>David J. Cuccia, Anders Gustafsson</Authors>
-    <Description>This is a C# port of the C-based MPFIT Levenberg-Marquardt solver for nonlinear least-squares data fitting at Argonne National Labs for .NET 2.0 and higher, or any platform target compatible with PCL Profile 328 or .NET Standard 1.0.</Description>
+    <PackageDescription>This is a C# port of the C-based MPFIT Levenberg-Marquardt solver for nonlinear least-squares data fitting at Argonne National Labs for .NET 2.0 and higher, or any platform target compatible with PCL Profile 328 or .NET Standard 1.0.</PackageDescription>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
-    <PackageLicenseUrl>https://opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/cureos/csmpfit</PackageProjectUrl>
     <RepositoryUrl>https://github.com/cureos/csmpfit</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Copyright>Copyright (c) 2011-2017 David J. Cuccia, Ph.D.; Anders Gustafsson, Cureos AB. All rights reserved.</Copyright>
-    <PackageTags>mpfit levenbergmarquardt dataanalysis PCL netstandard dotnet</PackageTags>
-	<IncludeSymbols>true</IncludeSymbols>
+    <PackageTags>mpfit levenbergmarquardt dataanalysis netstandard dotnet</PackageTags>
+    <PackRelease>true</PackRelease>
+    <PublishRelease>true</PublishRelease>
+    <IncludeSymbols>true</IncludeSymbols>
+    <SymbolPackageFormat>snupkg</SymbolPackageFormat>
   </PropertyGroup>
   
 </Project>
