@@ -299,7 +299,7 @@ namespace MPFitLib
         /// <param name="pars">
         /// array of npar structures specifying constraints;
         /// or 0 (null pointer) for unconstrained fitting
-        /// [ see README and mp_par.cs for definition & use of mp_par]
+        /// [ see README and mp_par.cs for definition &amp; use of mp_par]
         /// </param>
         /// <param name="config"></param>
         /// <param name="prv">
@@ -320,8 +320,8 @@ namespace MPFitLib
         /// </param>
         /// <returns></returns>
         public static int Solve(mp_func funct, int m, int npar,
-              double[] xall, mp_par[] pars, mp_config config, object prv,
-              ref mp_result result, TextWriter logger = null)
+              double[] xall, mp_par[]? pars, mp_config? config, object prv,
+              ref mp_result result, TextWriter? logger = null)
         {
             mp_config conf = new mp_config();
             int i, j, info, iflag, nfree, npegged, iter;
@@ -340,15 +340,15 @@ namespace MPFitLib
             const double zero = 0.0;
             int nfev = 0;
 
-            double[] step, dstep, llim, ulim;
-            int[] pfixed, mpside, ifree, qllim, qulim;
+            double[] step, dstep;
+            int[] pfixed, mpside, ifree;
 
             // explicitly setting to null to avoid compiler 
             // identification of uninitialized arrays
-            qulim = null;
-            qllim = null;
-            ulim = null;
-            llim = null;
+            int[]? qulim = null;
+            int[]? qllim = null;
+            double[]? ulim = null;
+            double[]? llim = null;
 
             int[] ddebug;
             double[] ddrtol, ddatol;
@@ -594,8 +594,8 @@ namespace MPFitLib
             {
                 for (j = 0; j < nfree; j++)
                 {
-                    int lpegged = (qllim[j] != 0 && (x[j] == llim[j])) ? 1 : 0;
-                    int upegged = (qulim[j] != 0 && (x[j] == ulim[j])) ? 1 : 0;
+                    int lpegged = (qllim![j] != 0 && (x[j] == llim![j])) ? 1 : 0;
+                    int upegged = (qulim![j] != 0 && (x[j] == ulim![j])) ? 1 : 0;
                     sum = 0;
 
                     /* If the parameter is pegged at a limit, compute the gradient direction */
@@ -801,18 +801,18 @@ namespace MPFitLib
                  */
                 for (j = 0; j < nfree; j++)
                 {
-                    int lpegged = (qllim[j] != 0 && (x[j] <= llim[j])) ? 1 : 0;
-                    int upegged = (qulim[j] != 0 && (x[j] >= ulim[j])) ? 1 : 0;
+                    int lpegged = (qllim![j] != 0 && (x[j] <= llim![j])) ? 1 : 0;
+                    int upegged = (qulim![j] != 0 && (x[j] >= ulim![j])) ? 1 : 0;
                     int dwa1 = Math.Abs(wa1[j]) > MP_MACHEP0 ? 1 : 0;
 
                     if (lpegged != 0 && (wa1[j] < 0)) wa1[j] = 0;
                     if (upegged != 0 && (wa1[j] > 0)) wa1[j] = 0;
 
-                    if (dwa1 != 0 && qllim[j] != 0 && ((x[j] + wa1[j]) < llim[j]))
+                    if (dwa1 != 0 && qllim[j] != 0 && ((x[j] + wa1[j]) < llim![j]))
                     {
                         alpha = mp_dmin1(alpha, (llim[j] - x[j]) / wa1[j]);
                     }
-                    if (dwa1 != 0 && qulim[j] != 0 && ((x[j] + wa1[j]) > ulim[j]))
+                    if (dwa1 != 0 && qulim[j] != 0 && ((x[j] + wa1[j]) > ulim![j]))
                     {
                         alpha = mp_dmin1(alpha, (ulim[j] - x[j]) / wa1[j]);
                     }
@@ -830,16 +830,16 @@ namespace MPFitLib
                     /* Adjust the output values.  If the step put us exactly
                      * on a boundary, make sure it is exact.
                      */
-                    sgnu = (ulim[j] >= 0) ? (+1) : (-1);
-                    sgnl = (llim[j] >= 0) ? (+1) : (-1);
+                    sgnu = (ulim![j] >= 0) ? (+1) : (-1);
+                    sgnl = (llim![j] >= 0) ? (+1) : (-1);
                     ulim1 = ulim[j] * (1 - sgnu * MP_MACHEP0) - ((ulim[j] == 0) ? (MP_MACHEP0) : 0);
                     llim1 = llim[j] * (1 + sgnl * MP_MACHEP0) + ((llim[j] == 0) ? (MP_MACHEP0) : 0);
 
-                    if (qulim[j] != 0 && (wa2[j] >= ulim1))
+                    if (qulim![j] != 0 && (wa2[j] >= ulim1))
                     {
                         wa2[j] = ulim[j];
                     }
-                    if (qllim[j] != 0 && (wa2[j] <= llim1))
+                    if (qllim![j] != 0 && (wa2[j] <= llim1))
                     {
                         wa2[j] = llim[j];
                     }
@@ -1139,9 +1139,9 @@ namespace MPFitLib
                   double[] fjac, int ldfjac, double epsfcn,
                   double[] wa, object priv, ref int nfev,
                   double[] step, double[] dstep, int[] dside,
-                  int[] qulimited, double[] ulimit,
+                  int[]? qulimited, double[]? ulimit,
                   int[] ddebug, double[] ddrtol, double[] ddatol, 
-                  double[] wa2, DelimitedArray<double>[] dvec, TextWriter logger)
+                  double[] wa2, DelimitedArray<double>[] dvec, TextWriter? logger)
         {
             /*
             *     **********

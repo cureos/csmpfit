@@ -74,10 +74,12 @@ namespace MPFitLib.Test
                 ey[i] = 0.07; /* Data errors */
             }
 
-            CustomUserVariable v = new CustomUserVariable();
-            v.X = x;
-            v.Y = y;
-            v.Ey = ey;
+            CustomUserVariable v = new CustomUserVariable
+            {
+                X = x,
+                Y = y,
+                Ey = ey
+            };
 
             /* Call fitting function for 10 data points and 2 parameters */
             status = MPFit.Solve(ForwardModels.LinFunc, 10, 2, p, null, null, v, ref result);

@@ -29,8 +29,6 @@ namespace MPFitLib
     /// <summary>
     /// User-function delegate structure required by MPFit.Solve
     /// </summary>
-    /// <param name="m">Number of functions (elemens of fvec)</param>
-    /// <param name="npar">Number of variables (elements of x)</param>
     /// <param name="a">I - Parameters</param>
     /// <param name="fvec">O - function values</param>
     /// <param name="dvec">
@@ -39,6 +37,6 @@ namespace MPFitLib
     /// </param>
     /// <param name="prv">I/O - function private data (cast to object type in user function)</param>
     /// <returns></returns>
-    public delegate int mp_func(double[] a, double[] fvec, IList<double>[] dvec, object prv);
+    public delegate int mp_func(double[] a, double[] fvec, IList<double>[]? dvec, object prv);
     //public delegate int mp_func(int m, int npar, double[] x, double[] fvec, IList<double>[] dvec, object prv);
 }

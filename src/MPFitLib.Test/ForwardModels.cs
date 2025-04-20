@@ -37,7 +37,7 @@ namespace MPFitLib.Test
          *
          * RETURNS: error code (0 = success)
          */
-        public static int LinFunc(double[] p, double[] dy, IList<double>[] dvec, object vars)
+        public static int LinFunc(double[] p, double[] dy, IList<double>[]? dvec, object vars)
         {
             int i;
             double[] x, y, ey;
@@ -69,7 +69,7 @@ namespace MPFitLib.Test
         *
         * RETURNS: error code (0 = success)
         */
-        public static int QuadFunc(double[] p, double[] dy, IList<double>[] dvec, object vars)
+        public static int QuadFunc(double[] p, double[] dy, IList<double>[]? dvec, object vars)
         {
             int i;
             double[] x, y, ey;
@@ -105,7 +105,7 @@ namespace MPFitLib.Test
          *
          * RETURNS: error code (0 = success)
          */
-        public static int GaussFunc(double[] p, double[] dy, IList<double>[] dvec, object vars)
+        public static int GaussFunc(double[] p, double[] dy, IList<double>[]? dvec, object vars)
         {
             int i;
             CustomUserVariable v = (CustomUserVariable)vars;
@@ -127,7 +127,7 @@ namespace MPFitLib.Test
             return 0;
         }
 
-        public static int LineFunc(double[] p, double[] dy, IList<double>[] dvec, object vars)
+        public static int LineFunc(double[] p, double[] dy, IList<double>[]? dvec, object vars)
         {
             var lineFitData = (LineFitData)vars;
             var x = lineFitData.X;
@@ -152,7 +152,7 @@ namespace MPFitLib.Test
             }
             return 0;
         }
-        public static int GaussianFuncAndDerivs(double[] p, double[] dy, IList<double>[] dvec, object vars)
+        public static int GaussianFuncAndDerivs(double[] p, double[] dy, IList<double>[]? dvec, object vars)
         {
             CustomUserVariable v = (CustomUserVariable)vars;
             double[] x, y, ey;

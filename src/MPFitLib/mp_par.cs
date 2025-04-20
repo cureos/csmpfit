@@ -31,7 +31,7 @@ namespace MPFitLib
         public int[] limited = new int[2];   /* 1 = low/upper limit; 0 = no limit */
         public double[] limits = new double[2]; /* lower/upper limit boundary value */
 
-        public string parname;    /* Name of parameter, or 0 for none */
+        public string? parname;    /* Name of parameter, or 0 for none */
         public double step;      /* Step size for finite difference */
         public double relstep;   /* Relative step size for finite difference */
         public int side;         /* Sidedness of finite difference derivative 
