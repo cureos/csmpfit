@@ -20,6 +20,7 @@
    added changes from mpfit.h v1.16 2016/06/02
     and mpfit.c v1.24 2013/04/23
    added changes from mpfit version 1.4 (no file versions provided)
+   added changes from cmpfit version 1.5 (just a comment, since the bug was already fixed here)
  */
 
 using System;
@@ -30,7 +31,7 @@ namespace MPFitLib
 {
     public static class MPFit
     {
-        public const string MPFIT_VERSION = "1.4";
+        public const string MPFIT_VERSION = "1.5";
 
         public const int MP_NO_ITER = -1;
 
@@ -1305,7 +1306,7 @@ namespace MPFitLib
                     /* Skip parameters already done by user-computed partials */
                     if (dside != null && dsidei == 3)
                     {
-                        ij += m;
+                        ij += m; /* still need to advance fjac pointer */
                         continue;
                     }
 
