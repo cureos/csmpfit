@@ -20,14 +20,14 @@
 */
 
 using System;
-using Xunit;
+using NUnit.Framework;
 
 namespace MPFitLib.Test
 {
     public class TestMPFit
     {
         /* Test harness routine, which contains test data, invokes mpfit() */
-        [Fact]
+        [Test]
         public void TestLinFit()
         {
             double[] x = {-1.7237128E+00,1.8712276E+00,-9.6608055E-01,
@@ -68,13 +68,13 @@ namespace MPFitLib.Test
 
             PrintResult(p, pactual, result);
             
-            Assert.Equal(1, status);
-            Assert.Equal(pactual, p, (e, a) => Math.Abs(e - a) < 0.01);
+            Assert.That(status, Is.EqualTo(1));
+            Assert.That(p, Is.EqualTo(pactual).Within(0.01));
         }
 
         /* Test harness routine, which contains test quadratic data, invokes
            Solve() */
-        [Fact]
+        [Test]
         public void TestQuadFit()
         {
             double[] x = {-1.7237128E+00,1.8712276E+00,-9.6608055E-01,
@@ -107,14 +107,14 @@ namespace MPFitLib.Test
 
             PrintResult(p, pactual, result);
 
-            Assert.Equal(1, status);
-            Assert.Equal(pactual, p, (e, a) => Math.Abs(e - a) < 0.1);
+            Assert.That(status, Is.EqualTo(1));
+            Assert.That(p, Is.EqualTo(pactual).Within(0.1));
         }
 
         /* Test harness routine, which contains test quadratic data;
            Example of how to fix a parameter
         */
-        [Fact]
+        [Test]
         public void TestQuadFix()
         {
             double[] x = {-1.7237128E+00,1.8712276E+00,-9.6608055E-01,
@@ -156,13 +156,13 @@ namespace MPFitLib.Test
 
             PrintResult(p, pactual, result);
 
-            Assert.Equal(1, status);
-            Assert.Equal(pactual, p, (e, a) => Math.Abs(e - a) < 0.03);
+            Assert.That(status, Is.EqualTo(1));
+            Assert.That(p, Is.EqualTo(pactual).Within(0.03));
         }
 
 
         /* Test harness routine, which contains test gaussian-peak data */
-        [Fact]
+        [Test]
         public void TestGaussFit()
         {
             double[] x = {-1.7237128E+00,1.8712276E+00,-9.6608055E-01,
@@ -202,8 +202,8 @@ namespace MPFitLib.Test
 
             PrintResult(p, pactual, result);
 
-            Assert.Equal(1, status);
-            Assert.Equal(pactual, p, (e, a) => Math.Abs(e - a) < 0.5);
+            Assert.That(status, Is.EqualTo(1));
+            Assert.That(p, Is.EqualTo(pactual).Within(0.5));
         }
 
 
@@ -213,7 +213,7 @@ namespace MPFitLib.Test
 
            Commented example of how to put boundary constraints
         */
-        [Fact]
+        [Test]
         public void TestGaussFix()
         {
             double[] x = {-1.7237128E+00,1.8712276E+00,-9.6608055E-01,
@@ -263,11 +263,11 @@ namespace MPFitLib.Test
 
             PrintResult(p, pactual, result);
 
-            Assert.Equal(1, status);
-            Assert.Equal(pactual, p, (e, a) => Math.Abs(e - a) < 0.5);
+            Assert.That(status, Is.EqualTo(1));
+            Assert.That(p, Is.EqualTo(pactual).Within(0.5));
         }
 
-        [Fact]
+        [Test]
         public void TestAnalyticDerivatives()
         {
             const double intercept = 7.0;
@@ -293,11 +293,11 @@ namespace MPFitLib.Test
 
             PrintResult(p, pactual, result);
 
-            Assert.Equal(2, status);
-            Assert.Equal(pactual, p, (e, a) => Math.Abs(e - a) < 0.01);
+            Assert.That(status, Is.EqualTo(2));
+            Assert.That(p, Is.EqualTo(pactual).Within(0.01));
         }
 
-        [Fact]
+        [Test]
         public void TestGaussianWithDerivs()
         {
             double[] x =
@@ -341,8 +341,8 @@ namespace MPFitLib.Test
             PrintResult(p, pactual, result);
             Console.WriteLine(logger.ToString());
 
-            Assert.Equal(1, status);
-            Assert.Equal(pactual, p, (e, a) => Math.Abs(e - a) < 0.5);
+            Assert.That(status, Is.EqualTo(1));
+            Assert.That(p, Is.EqualTo(pactual).Within(0.5));
         }
 
         /* Simple routine to print the fit results */
