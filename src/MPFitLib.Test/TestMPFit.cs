@@ -20,33 +20,15 @@
 */
 
 using System;
+using Xunit;
 
 namespace MPFitLib.Test
 {
     public class TestMPFit
     {
-        /* Main function which drives the whole thing */
-        public static void Main()
-        {
-            int i;
-            int niter = 1;
-
-            for (i = 0; i < niter; i++)
-            {
-                TestLinFit();
-                TestQuadFit();
-                TestQuadFix();
-                TestGaussFit();
-                TestGaussFix();
-                TestAnalyticDerivatives();
-                TestGaussianWithDerivs();
-            }
-
-            Console.ReadKey();
-        }
-
         /* Test harness routine, which contains test data, invokes mpfit() */
-        private static int TestLinFit()
+        [Fact]
+        public void TestLinFit()
         {
             double[] x = {-1.7237128E+00,1.8712276E+00,-9.6608055E-01,
 		        -2.8394297E-01,1.3416969E+00,1.3757038E+00,
@@ -84,15 +66,16 @@ namespace MPFitLib.Test
             /* Call fitting function for 10 data points and 2 parameters */
             status = MPFit.Solve(ForwardModels.LinFunc, 10, 2, p, null, null, v, ref result);
 
-            Console.Write("*** TestLinFit status = {0}\n", status);
             PrintResult(p, pactual, result);
-
-            return 0;
+            
+            Assert.Equal(1, status);
+            Assert.Equal(pactual, p, (e, a) => Math.Abs(e - a) < 0.01);
         }
 
         /* Test harness routine, which contains test quadratic data, invokes
            Solve() */
-        private static int TestQuadFit()
+        [Fact]
+        public void TestQuadFit()
         {
             double[] x = {-1.7237128E+00,1.8712276E+00,-9.6608055E-01,
 		        -2.8394297E-01,1.3416969E+00,1.3757038E+00,
@@ -122,16 +105,17 @@ namespace MPFitLib.Test
             /* Call fitting function for 10 data points and 3 parameters */
             status = MPFit.Solve(ForwardModels.QuadFunc, 10, 3, p, null, null, v, ref result);
 
-            Console.Write("*** TestQuadFit status = {0}\n", status);
             PrintResult(p, pactual, result);
 
-            return 0;
+            Assert.Equal(1, status);
+            Assert.Equal(pactual, p, (e, a) => Math.Abs(e - a) < 0.1);
         }
 
         /* Test harness routine, which contains test quadratic data;
            Example of how to fix a parameter
         */
-        private static int TestQuadFix()
+        [Fact]
+        public void TestQuadFix()
         {
             double[] x = {-1.7237128E+00,1.8712276E+00,-9.6608055E-01,
 		-2.8394297E-01,1.3416969E+00,1.3757038E+00,
@@ -170,16 +154,16 @@ namespace MPFitLib.Test
                parameter fixed) */
             status = MPFit.Solve(ForwardModels.QuadFunc, 10, 3, p, pars, null, v, ref result);
 
-            Console.Write("*** TestQuadFix status = {0}\n", status);
-
             PrintResult(p, pactual, result);
 
-            return 0;
+            Assert.Equal(1, status);
+            Assert.Equal(pactual, p, (e, a) => Math.Abs(e - a) < 0.03);
         }
 
 
         /* Test harness routine, which contains test gaussian-peak data */
-        private static int TestGaussFit()
+        [Fact]
+        public void TestGaussFit()
         {
             double[] x = {-1.7237128E+00,1.8712276E+00,-9.6608055E-01,
 		-2.8394297E-01,1.3416969E+00,1.3757038E+00,
@@ -216,10 +200,10 @@ namespace MPFitLib.Test
                parameters fixed) */
             status = MPFit.Solve(ForwardModels.GaussFunc, 10, 4, p, pars, null, v, ref result);
 
-            Console.Write("*** TestGaussFit status = {0}\n", status);
             PrintResult(p, pactual, result);
 
-            return 0;
+            Assert.Equal(1, status);
+            Assert.Equal(pactual, p, (e, a) => Math.Abs(e - a) < 0.5);
         }
 
 
@@ -229,7 +213,8 @@ namespace MPFitLib.Test
 
            Commented example of how to put boundary constraints
         */
-        private static int TestGaussFix()
+        [Fact]
+        public void TestGaussFix()
         {
             double[] x = {-1.7237128E+00,1.8712276E+00,-9.6608055E-01,
 		-2.8394297E-01,1.3416969E+00,1.3757038E+00,
@@ -276,13 +261,14 @@ namespace MPFitLib.Test
                parameters fixed) */
             status = MPFit.Solve(ForwardModels.GaussFunc, 10, 4, p, pars, null, v, ref result);
 
-            Console.Write("*** TestGaussFix status = {0}\n", status);
             PrintResult(p, pactual, result);
 
-            return 0;
+            Assert.Equal(1, status);
+            Assert.Equal(pactual, p, (e, a) => Math.Abs(e - a) < 0.5);
         }
 
-        private static void TestAnalyticDerivatives()
+        [Fact]
+        public void TestAnalyticDerivatives()
         {
             const double intercept = 7.0;
             const double slope = -3.0;
@@ -305,11 +291,14 @@ namespace MPFitLib.Test
 
             var status = MPFit.Solve(ForwardModels.LineFunc, x.Length, 2, p, mpPar, null, new LineFitData(x, y), ref result);
 
-            Console.Write("*** TestLineFit status = {0}\n", status);
             PrintResult(p, pactual, result);
+
+            Assert.Equal(2, status);
+            Assert.Equal(pactual, p, (e, a) => Math.Abs(e - a) < 0.01);
         }
 
-        private static void TestGaussianWithDerivs()
+        [Fact]
+        public void TestGaussianWithDerivs()
         {
             double[] x =
             {
@@ -349,9 +338,11 @@ namespace MPFitLib.Test
             var logger = new System.IO.StringWriter();
             int status = MPFit.Solve(ForwardModels.GaussianFuncAndDerivs, 10, 4, p, pars, null, v, ref result, logger);
 
-            Console.Write("*** TestGaussFitWithDerivs status = {0}\n", status);
             PrintResult(p, pactual, result);
             Console.WriteLine(logger.ToString());
+
+            Assert.Equal(1, status);
+            Assert.Equal(pactual, p, (e, a) => Math.Abs(e - a) < 0.5);
         }
 
         /* Simple routine to print the fit results */
