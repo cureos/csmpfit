@@ -1,20 +1,22 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netstandard1.0;netstandard2.0;net20</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <LangVersion>8.0</LangVersion>
     <AssemblyName>MPFitLib</AssemblyName>
     <RootNamespace>MPFitLib</RootNamespace>
     <ImplicitUsings>disable</ImplicitUsings>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
     <SignAssembly>true</SignAssembly>
     <AssemblyOriginatorKeyFile>MPFit.snk</AssemblyOriginatorKeyFile>
-    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Any CPU' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Any CPU' ">
@@ -25,18 +27,18 @@
   
   <PropertyGroup>
     <Company>Cureos</Company>
-    <Copyright>Copyright © 2011-2022 David J. Cuccia, Ph.D.; Anders Gustafsson, Cureos. All rights reserved.</Copyright>
+    <Copyright>Copyright © 2011-2025 David J. Cuccia, Ph.D.; Anders Gustafsson, Cureos. All rights reserved.</Copyright>
     <Description>C# MPFIT Library</Description>
     <Product>csmpfit</Product>
     <Title>MPFitLib</Title>
-    <Version>1.1.2</Version>
+    <Version>1.2.0</Version>
     <NeutralLanguage>en</NeutralLanguage>
   </PropertyGroup>
 
   <PropertyGroup>
     <PackageId>csmpfit</PackageId>
     <Authors>David J. Cuccia, Anders Gustafsson</Authors>
-    <PackageDescription>This is a C# port of the C-based MPFIT Levenberg-Marquardt solver for nonlinear least-squares data fitting at Argonne National Labs for .NET 2.0 and higher, or any platform target compatible with PCL Profile 328 or .NET Standard 1.0.</PackageDescription>
+    <PackageDescription>This is a C# port of the C-based MPFIT Levenberg-Marquardt solver for nonlinear least-squares data fitting at Argonne National Labs for any platform compatible with .NET Standard 2.0.</PackageDescription>
     <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/cureos/csmpfit</PackageProjectUrl>

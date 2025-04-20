@@ -24,8 +24,8 @@ namespace MPFitLib.Test
     /// </summary>
     public class CustomUserVariable
     {
-        public double[] X;
-        public double[] Y;
-        public double[] Ey;
+        public required double[] X;
+        public required double[] Y;
+        public required double[] Ey;
     }
 }
