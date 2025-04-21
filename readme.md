@@ -5,6 +5,12 @@
 
 A C# port of the C-based [mpfit Levenberg Marquardt solver (Version 1.5)](http://cow.physics.wisc.edu/~craigm/idl/cmpfit.html) at Argonne National Labs, published as a .NET Standard 2.0 library.
 
+# What's new
+## Version 1.2.0
+* Only published for .NET Standard 2.0. Use version 1.1.2 or earlier for .NET Standard 1.0 and .NET 2.0 support.
+* Nullable reference types enabled
+* Assembly signing removed
+
 # Credits
 *csmpfit* is based on the following IDL and C mpfit libraries:
 
