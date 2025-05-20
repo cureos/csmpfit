@@ -321,6 +321,16 @@ namespace MPFitLib
         /// </param>
         /// <returns></returns>
         public static int Solve(mp_func funct, int m, int npar,
+            double[] xall, mp_par[]? pars, mp_config? config, object prv,
+            ref mp_result result, TextWriter? logger = null)
+        {
+            return Solve(mp_func_ref, m, npar, xall, pars, config, prv, ref result, logger);
+
+            int mp_func_ref(double[] a, ref double[] fvec, ref IList<double>[]? dvec, object prv) =>
+                funct(a, fvec, dvec, prv);
+        }
+
+        public static int Solve(mp_func_ref funct, int m, int npar,
               double[] xall, mp_par[]? pars, mp_config? config, object prv,
               ref mp_result result, TextWriter? logger = null)
         {
@@ -538,7 +548,8 @@ namespace MPFitLib
             dvectptr = new DelimitedArray<double>[npar];
 
             /* Evaluate user function with initial parameter values */
-            iflag = funct(xall, fvec, null, prv);
+            IList<double>[]? ignore = null;
+            iflag = funct(xall, ref fvec, ref ignore, prv);
             //iflag = funct(m, npar, xall, fvec, null, prv);
             nfev += 1;
             if (iflag < 0)
@@ -870,7 +881,7 @@ namespace MPFitLib
                 xnew[ifree[i]] = wa2[i];
             }
 
-            iflag = funct(xnew, wa4, null, prv);
+            iflag = funct(xnew, ref wa4, ref ignore, prv);
             //iflag = funct(m, npar, xnew, wa4, null, prv);
             nfev += 1;
             if (iflag < 0) goto L300;
@@ -1057,7 +1068,7 @@ namespace MPFitLib
 
             if ((conf.nprint > 0) && (info > 0))
             {
-                iflag = funct(xall, fvec, null, prv);
+                iflag = funct(xall,ref fvec, ref ignore, prv);
                 //iflag = funct(m, npar, xall, fvec, null, prv);
                 nfev += 1;
             }
@@ -1132,17 +1143,16 @@ namespace MPFitLib
             return info;
         }
 
-
         /************************fdjac2.c*************************/
 
-        private static int mp_fdjac2(mp_func funct,
+        private static int mp_fdjac2(mp_func_ref funct,
                   int m, int n, int[] ifree, int npar, double[] x, double[] fvec,
                   double[] fjac, int ldfjac, double epsfcn,
                   double[] wa, object priv, ref int nfev,
                   double[] step, double[] dstep, int[] dside,
                   int[]? qulimited, double[]? ulimit,
                   int[] ddebug, double[] ddrtol, double[] ddatol, 
-                  double[] wa2, DelimitedArray<double>[] dvec, TextWriter? logger)
+                  double[] wa2, IList<double>[]? dvec, TextWriter? logger)
         {
             /*
             *     **********
@@ -1274,7 +1284,7 @@ namespace MPFitLib
                then compute them first. */
             if (hasAnalyticalDeriv != 0)
             {
-                iflag = funct(x, wa, dvec, priv);
+                iflag = funct(x, ref wa, ref dvec, priv);
                 //iflag = funct(m, npar, x, wa, dvec, priv);
                 if (nfev != 0) nfev = nfev + 1;  //todo: correct translation from C?
                 if (iflag < 0) goto DONE;
@@ -1326,7 +1336,8 @@ namespace MPFitLib
                     }
 
                     x[ifree[j]] = temp + h;
-                    iflag = funct(x, wa, null, priv);
+                    IList<double>[]? ignore = null;
+                    iflag = funct(x, ref wa, ref ignore, priv);
                     //iflag = funct(m, npar, x, wa, null, priv);
                     if (nfev != 0)
                     {
@@ -1377,7 +1388,7 @@ namespace MPFitLib
 
                         /* Evaluate at x - h */
                         x[ifree[j]] = temp - h;
-                        iflag = funct(x, wa, null, priv);
+                        iflag = funct(x, ref wa, ref ignore, priv);
                         //iflag = funct(m, npar, x, wa, null, priv);
                         if (nfev != 0) nfev = nfev + 1; // todo: correct translation from C?
                         if (iflag < 0) goto DONE;

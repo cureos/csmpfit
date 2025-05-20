@@ -39,4 +39,7 @@ namespace MPFitLib
     /// <returns></returns>
     public delegate int mp_func(double[] a, double[] fvec, IList<double>[]? dvec, object prv);
     //public delegate int mp_func(int m, int npar, double[] x, double[] fvec, IList<double>[] dvec, object prv);
+
+    public delegate int mp_func_ref(double[] a, ref double[] fvec, ref IList<double>[]? dvec, object prv);
+
 }
