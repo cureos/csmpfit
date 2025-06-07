@@ -319,7 +319,7 @@ namespace MPFitLib
         /// (Text) stream writer to which to write debug information. If
         /// null, no debug information is output.
         /// </param>
-        /// <returns></returns>
+        /// <returns>0 if computation successful, non-zero otherwise.</returns>
         public static int Solve(mp_func funct, int m, int npar,
             double[] xall, mp_par[]? pars, mp_config? config, object prv,
             ref mp_result result, TextWriter? logger = null)
@@ -330,6 +330,46 @@ namespace MPFitLib
                 funct(a, fvec, dvec, prv);
         }
 
+        /// <summary>
+        /// the purpose of mpfit is to minimize the sum of the squares of
+        /// m nonlinear functions in n variables by a modification of
+        /// the levenberg-marquardt algorithm. the user must provide a
+        /// subroutine which calculates the functions. the jacobian is
+        /// then calculated by a finite-difference approximation.
+        /// </summary>
+        /// <param name="funct">
+        /// function to be minimized, where fvec and dvec are provided
+        /// as reference parameters.
+        /// </param>
+        /// <param name="m">number of data points</param>
+        /// <param name="npar">number of fit parameters</param>
+        /// <param name="xall">
+        /// array of n initial parameter values
+        /// upon return, contains adjusted parameter values
+        /// </param>
+        /// <param name="pars">
+        /// array of npar structures specifying constraints;
+        /// or 0 (null pointer) for unconstrained fitting
+        /// [ see README and mp_par.cs for definition &amp; use of mp_par]
+        /// </param>
+        /// <param name="config"></param>
+        /// <param name="prv">
+        /// any private user data which is to be passed directly
+        ///  to funct without modification by MPFit.Solve.
+        /// </param>
+        /// <param name="result">
+        /// structure, which upon return, contains
+        /// the results of the fit. If any of the array values are to be
+        /// returned, the user should allocate storage for them
+        /// and assign the corresponding references in result.
+        /// Upon return, result will be updated, and
+        /// any of the non-null arrays will be filled.
+        /// </param>
+        /// <param name="logger">
+        /// (Text) stream writer to which to write debug information. If
+        /// null, no debug information is output.
+        /// </param>
+        /// <returns>0 if computation successful, non-zero otherwise.</returns>
         public static int Solve(mp_func_ref funct, int m, int npar,
               double[] xall, mp_par[]? pars, mp_config? config, object prv,
               ref mp_result result, TextWriter? logger = null)

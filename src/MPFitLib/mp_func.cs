@@ -36,10 +36,21 @@ namespace MPFitLib
     /// "Array of ILists" to accomodate DelimitedArray IList implementation
     /// </param>
     /// <param name="prv">I/O - function private data (cast to object type in user function)</param>
-    /// <returns></returns>
+    /// <returns>0 if computation successful, non-zero otherwise.</returns>
     public delegate int mp_func(double[] a, double[] fvec, IList<double>[]? dvec, object prv);
-    //public delegate int mp_func(int m, int npar, double[] x, double[] fvec, IList<double>[] dvec, object prv);
 
+    /// <summary>
+    /// User-function delegate structure required by MPFit.Solve.
+    /// Supports reference parameters for <paramref name="fvec"/> and <paramref name="dvec"/>.
+    /// </summary>
+    /// <param name="a">I - Parameters</param>
+    /// <param name="fvec">O - function values</param>
+    /// <param name="dvec">
+    /// O - function derivatives (optional)
+    /// "Array of ILists" to accomodate DelimitedArray IList implementation
+    /// </param>
+    /// <param name="prv">I/O - function private data (cast to object type in user function)</param>
+    /// <returns>0 if computation successful, non-zero otherwise.</returns>
     public delegate int mp_func_ref(double[] a, ref double[] fvec, ref IList<double>[]? dvec, object prv);
 
 }
