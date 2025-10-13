@@ -37,13 +37,13 @@ namespace MPFitLib.Test
          *
          * RETURNS: error code (0 = success)
          */
-        public static int LinFunc(double[] p, double[] dy, IList<double>[]? dvec, object vars)
+        public static int LinFunc(double[] p, double[] dy, IList<double>[]? dvec, object? vars)
         {
             int i;
             double[] x, y, ey;
             double f;
 
-            CustomUserVariable v = (CustomUserVariable)vars;
+            if (vars is not CustomUserVariable v) return 1;
 
             x = v.X;
             y = v.Y;
@@ -69,12 +69,12 @@ namespace MPFitLib.Test
         *
         * RETURNS: error code (0 = success)
         */
-        public static int QuadFunc(double[] p, double[] dy, IList<double>[]? dvec, object vars)
+        public static int QuadFunc(double[] p, double[] dy, IList<double>[]? dvec, object? vars)
         {
             int i;
             double[] x, y, ey;
 
-            CustomUserVariable v = (CustomUserVariable)vars;
+            if (vars is not CustomUserVariable v) return 1;
             x = v.X;
             y = v.Y;
             ey = v.Ey;
@@ -105,10 +105,11 @@ namespace MPFitLib.Test
          *
          * RETURNS: error code (0 = success)
          */
-        public static int GaussFunc(double[] p, double[] dy, IList<double>[]? dvec, object vars)
+        public static int GaussFunc(double[] p, double[] dy, IList<double>[]? dvec, object? vars)
         {
             int i;
-            CustomUserVariable v = (CustomUserVariable)vars;
+            if (vars is not CustomUserVariable v) return 1;
+
             double[] x, y, ey;
             double xc, sig2;
 
@@ -127,9 +128,10 @@ namespace MPFitLib.Test
             return 0;
         }
 
-        public static int LineFunc(double[] p, double[] dy, IList<double>[]? dvec, object vars)
+        public static int LineFunc(double[] p, double[] dy, IList<double>[]? dvec, object? vars)
         {
-            var lineFitData = (LineFitData)vars;
+            if (vars is not LineFitData lineFitData) return 1;
+
             var x = lineFitData.X;
             var y = lineFitData.Y;
 
@@ -152,9 +154,9 @@ namespace MPFitLib.Test
             }
             return 0;
         }
-        public static int GaussianFuncAndDerivs(double[] p, ref double[] dy, ref IList<double>[]? dvec, object vars)
+        public static int GaussianFuncAndDerivs(double[] p, ref double[] dy, ref IList<double>[]? dvec, object? vars)
         {
-            CustomUserVariable v = (CustomUserVariable)vars;
+            if (vars is not CustomUserVariable v) return 1;
             double[] x, y, ey;
             double sig2;
 

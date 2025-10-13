@@ -25,6 +25,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 
 namespace MPFitLib
@@ -321,13 +322,13 @@ namespace MPFitLib
         /// </param>
         /// <returns>0 if computation successful, non-zero otherwise.</returns>
         public static int Solve(mp_func funct, int m, int npar,
-            double[] xall, mp_par[]? pars, mp_config? config, object prv,
+            double[] xall, mp_par[]? pars, mp_config? config, object? prv,
             ref mp_result result, TextWriter? logger = null)
         {
             return Solve(mp_func_ref, m, npar, xall, pars, config, prv, ref result, logger);
 
-            int mp_func_ref(double[] a, ref double[] fvec, ref IList<double>[]? dvec, object prv) =>
-                funct(a, fvec, dvec, prv);
+            int mp_func_ref(double[] a, ref double[] fvec, ref IList<double>[]? dvec, object? prv_) =>
+                funct(a, fvec, dvec, prv_);
         }
 
         /// <summary>
@@ -371,7 +372,7 @@ namespace MPFitLib
         /// </param>
         /// <returns>0 if computation successful, non-zero otherwise.</returns>
         public static int Solve(mp_func_ref funct, int m, int npar,
-              double[] xall, mp_par[]? pars, mp_config? config, object prv,
+              double[] xall, mp_par[]? pars, mp_config? config, object? prv,
               ref mp_result result, TextWriter? logger = null)
         {
             mp_config conf = new mp_config();
@@ -407,7 +408,7 @@ namespace MPFitLib
             double[] fvec, qtf;
             double[] x, xnew, fjac, diag;
             double[] wa1, wa2, wa3, wa4;
-            DelimitedArray<double>[] dvectptr;
+            IList<double>[] dvectptr;
             int[] ipvt;
 
             int ldfjac;
@@ -585,7 +586,7 @@ namespace MPFitLib
             wa3 = new double[npar];
             wa4 = new double[m];
             ipvt = new int[npar];
-            dvectptr = new DelimitedArray<double>[npar];
+            dvectptr = new IList<double>[npar];
 
             /* Evaluate user function with initial parameter values */
             IList<double>[]? ignore = null;
@@ -1188,12 +1189,14 @@ namespace MPFitLib
         private static int mp_fdjac2(mp_func_ref funct,
                   int m, int n, int[] ifree, int npar, double[] x, double[] fvec,
                   double[] fjac, int ldfjac, double epsfcn,
-                  double[] wa, object priv, ref int nfev,
+                  double[] wa, object? priv, ref int nfev,
                   double[] step, double[] dstep, int[] dside,
                   int[]? qulimited, double[]? ulimit,
                   int[] ddebug, double[] ddrtol, double[] ddatol, 
                   double[] wa2, IList<double>[]? dvec, TextWriter? logger)
         {
+            Debug.Assert(dvec != null, "dvec declared nullable for call to funct, but most not be null on call");
+
             /*
             *     **********
             *
@@ -1301,15 +1304,15 @@ namespace MPFitLib
                 if (dside != null && dside[ifree[j]] == 3 && ddebug[ifree[j]] == 0)
                 {
                     /* Purely analytical derivatives */
-                    // reference a range of values inside larger array fjac (pointer arithmatic work-around)
-                    dvec[ifree[j]] = new DelimitedArray<double>(fjac, j * m, m); //fjac + j * m;
+                    // reference a range of values inside larger array fjac (pointer arithmetic work-around)
+                    dvec![ifree[j]] = new DelimitedArray<double>(fjac, j * m, m); //fjac + j * m;
                     hasAnalyticalDeriv = 1;
                 }
                 else if (dside != null && ddebug[ifree[j]] == 1)
                 {
                     /* Numerical and analytical derivatives as a debug cross-check */
-                    // reference a range of values inside larger array fjac (pointer arithmatic work-around)
-                    dvec[ifree[j]] = new DelimitedArray<double>(fjac, j * m, m); //fjac + j * m; 
+                    // reference a range of values inside larger array fjac (pointer arithmetic work-around)
+                    dvec![ifree[j]] = new DelimitedArray<double>(fjac, j * m, m); //fjac + j * m; 
                     hasAnalyticalDeriv = 1;
                     hasNumericalDeriv = 1;
                     hasDebugDeriv = 1;
