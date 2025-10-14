@@ -323,7 +323,7 @@ namespace MPFitLib
         /// <returns>0 if computation successful, non-zero otherwise.</returns>
         public static int Solve(mp_func funct, int m, int npar,
             double[] xall, mp_par[]? pars, mp_config? config, object? prv,
-            ref mp_result result, TextWriter? logger = null)
+            ref mp_result? result, TextWriter? logger = null)
         {
             return Solve(mp_func_ref, m, npar, xall, pars, config, prv, ref result, logger);
 
@@ -373,7 +373,7 @@ namespace MPFitLib
         /// <returns>0 if computation successful, non-zero otherwise.</returns>
         public static int Solve(mp_func_ref funct, int m, int npar,
               double[] xall, mp_par[]? pars, mp_config? config, object? prv,
-              ref mp_result result, TextWriter? logger = null)
+              ref mp_result? result, TextWriter? logger = null)
         {
             mp_config conf = new mp_config();
             int i, j, info, iflag, nfree, npegged, iter;
@@ -1126,7 +1126,7 @@ namespace MPFitLib
                 }
 
             /* Compute and return the covariance matrix and/or parameter errors */
-            if (result != null && (result.covar != null || result.xerror != null))
+            if (result != null && result.covar != null)
             {
                 mp_covar(nfree, fjac, ldfjac, ipvt, conf.covtol, wa2);
 
@@ -1145,17 +1145,14 @@ namespace MPFitLib
                     }
                 }
 
-                if (result.xerror != null)
-                {
-                    for (j = 0; j < npar; j++) result.xerror[j] = 0;
+                for (j = 0; j < npar; j++) result.xerror[j] = 0;
 
-                    for (j = 0; j < nfree; j++)
+                for (j = 0; j < nfree; j++)
+                {
+                    double cc = fjac[j * ldfjac + j];
+                    if (cc > 0)
                     {
-                        double cc = fjac[j * ldfjac + j];
-                        if (cc > 0)
-                        {
-                            result.xerror[ifree[j]] = Math.Sqrt(cc);
-                        }
+                        result.xerror[ifree[j]] = Math.Sqrt(cc);
                     }
                 }
             }
