@@ -39,24 +39,22 @@ namespace MPFitLib.Test
 		        0.787615,3.2599759E+00,2.9771762E+00,
 		        4.5936475E+00};
 
-            double[] ey = new double[10];
+            var ey = new double[10];
             /*        y = a + b * x */
             /*               a    b */
             double[] p = { 1.0, 1.0 };           /* Parameter initial conditions */
             double[] pactual = { 3.20, 1.78 };   /* Actual values used to make data */
             //double[] perror = { 0.0, 0.0 };                   /* Returned parameter errors */
-            int i;
-            int status;
 
-            mp_result result = new mp_result(2);
+            var result = new mp_result(2);
+
             //result.xerror = perror;
-
-            for (i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 ey[i] = 0.07; /* Data errors */
             }
 
-            CustomUserVariable v = new CustomUserVariable
+            var v = new CustomUserVariable
             {
                 X = x,
                 Y = y,
@@ -64,7 +62,7 @@ namespace MPFitLib.Test
             };
 
             /* Call fitting function for 10 data points and 2 parameters */
-            status = MPFit.Solve(ForwardModels.LinFunc, 10, 2, p, null, null, v, ref result);
+            var status = MPFit.Solve(ForwardModels.LinFunc, 10, 2, p, null, null, v, ref result);
 
             PrintResult(p, pactual, result);
             
@@ -85,25 +83,23 @@ namespace MPFitLib.Test
 		        5.40507,1.5787588E+01,1.6520903E+01,
 		        1.5971818E+01,4.7668524E+00,4.9337711E+00,
 		        8.7348375E+00};
-            double[] ey = new double[10];
+            var ey = new double[10];
             double[] p = { 1.0, 1.0, 1.0 };        /* Initial conditions */
             double[] pactual = { 4.7, 0.0, 6.2 };  /* Actual values used to make data */
             //double[] perror = new double[3];		       /* Returned parameter errors */
-            int i;
-            int status;
 
-            mp_result result = new mp_result(3);
+            var result = new mp_result(3);
+
             //result.xerror = perror;
-
-            for (i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
-                ey[i] = 0.2;       /* Data errors */
+                ey[i] = 0.2; /* Data errors */
             }
 
-            CustomUserVariable v = new CustomUserVariable { X = x, Y = y, Ey = ey };
+            var v = new CustomUserVariable { X = x, Y = y, Ey = ey };
 
             /* Call fitting function for 10 data points and 3 parameters */
-            status = MPFit.Solve(ForwardModels.QuadFunc, 10, 3, p, null, null, v, ref result);
+            var status = MPFit.Solve(ForwardModels.QuadFunc, 10, 3, p, null, null, v, ref result);
 
             PrintResult(p, pactual, result);
 
@@ -126,33 +122,31 @@ namespace MPFitLib.Test
 		1.5971818E+01,4.7668524E+00,4.9337711E+00,
 		8.7348375E+00};
 
-            double[] ey = new double[10];
+            var ey = new double[10];
             double[] p = { 1.0, 0.0, 1.0 };        /* Initial conditions */
             double[] pactual = { 4.7, 0.0, 6.2 };  /* Actual values used to make data */
             //double[] perror = new double[3];		       /* Returned parameter errors */
-            int i;
-            int status;
 
-            mp_result result = new mp_result(3);
+            var result = new mp_result(3);
             //result.xerror = perror;
 
-            mp_par[] pars = new mp_par[3] /* Parameter constraints */
+            var pars = new[] /* Parameter constraints */
                                 {
                                     new mp_par() , 
                                     new mp_par {isFixed = 1},  /* Fix parameter 1 */
                                     new mp_par()
                                 };             
 
-            for (i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 ey[i] = 0.2;
             }
 
-            CustomUserVariable v = new CustomUserVariable {X = x, Y = y, Ey = ey};
+            var v = new CustomUserVariable {X = x, Y = y, Ey = ey};
 
             /* Call fitting function for 10 data points and 3 parameters (1
                parameter fixed) */
-            status = MPFit.Solve(ForwardModels.QuadFunc, 10, 3, p, pars, null, v, ref result);
+            var status = MPFit.Solve(ForwardModels.QuadFunc, 10, 3, p, pars, null, v, ref result);
 
             PrintResult(p, pactual, result);
 
@@ -173,32 +167,29 @@ namespace MPFitLib.Test
 		4.7631559E+00,1.7187297E-01,1.1639182E-01,
 		1.5646480E+00,5.2322268E+00,4.2543168E+00,
 		6.2792623E-01};
-            double[] ey = new double[10];
+            var ey = new double[10];
             double[] p = { 0.0, 1.0, 1.0, 1.0 };       /* Initial conditions */
             double[] pactual = { 0.0, 4.70, 0.0, 0.5 };/* Actual values used to make data*/
             //double[] perror = new double[4];			   /* Returned parameter errors */
-            mp_par[] pars = new mp_par[4] /* Parameter constraints */
+            var pars = new[] /* Parameter constraints */
                                 {
                                     new mp_par(),
                                     new mp_par(), 
                                     new mp_par(),
                                     new mp_par()
-                                }; 
-            int i;
-            int status;
+                                };
 
-            mp_result result = new mp_result(4);
+            var result = new mp_result(4);
+
             //result.xerror = perror;
-
             /* No constraints */
+            for (var i = 0; i < 10; i++) ey[i] = 0.5;
 
-            for (i = 0; i < 10; i++) ey[i] = 0.5;
-
-            CustomUserVariable v = new CustomUserVariable { X = x, Y = y, Ey = ey };
+            var v = new CustomUserVariable { X = x, Y = y, Ey = ey };
 
             /* Call fitting function for 10 data points and 4 parameters (no
                parameters fixed) */
-            status = MPFit.Solve(ForwardModels.GaussFunc, 10, 4, p, pars, null, v, ref result);
+            var status = MPFit.Solve(ForwardModels.GaussFunc, 10, 4, p, pars, null, v, ref result);
 
             PrintResult(p, pactual, result);
 
@@ -224,23 +215,21 @@ namespace MPFitLib.Test
 		4.7631559E+00,1.7187297E-01,1.1639182E-01,
 		1.5646480E+00,5.2322268E+00,4.2543168E+00,
 		6.2792623E-01};
-            double[] ey = new double[10];
+            var ey = new double[10];
             double[] p = { 0.0, 1.0, 0.0, 0.1 };       /* Initial conditions */
             double[] pactual = { 0.0, 4.70, 0.0, 0.5 };/* Actual values used to make data*/
             //double[] perror = new double[4];			   /* Returned parameter errors */
-            int i;
-            int status;
 
-            mp_result result = new mp_result(4);
+            var result = new mp_result(4);
             //result.xerror = perror;
 
-            mp_par[] pars = new mp_par[4]/* Parameter constraints */
+            var pars = new[]/* Parameter constraints */
                                 {
                                     new mp_par {isFixed = 1},/* Fix parameters 0 and 2 */
                                     new mp_par(), 
                                     new mp_par {isFixed = 1},
                                     new mp_par()
-                                }; 
+                                };
 
             /* How to put limits on a parameter.  In this case, parameter 3 is
                limited to be between -0.3 and +0.2.
@@ -249,17 +238,16 @@ namespace MPFitLib.Test
             pars[3].limits[0] = -0.3;
             pars[3].limits[1] = +0.2;
             */
-
-            for (i = 0; i < 10; i++)
+            for (var i = 0; i < 10; i++)
             {
                 ey[i] = 0.5;
             }
 
-            CustomUserVariable v = new CustomUserVariable { X = x, Y = y, Ey = ey };
+            var v = new CustomUserVariable { X = x, Y = y, Ey = ey };
 
             /* Call fitting function for 10 data points and 4 parameters (2
                parameters fixed) */
-            status = MPFit.Solve(ForwardModels.GaussFunc, 10, 4, p, pars, null, v, ref result);
+            var status = MPFit.Solve(ForwardModels.GaussFunc, 10, 4, p, pars, null, v, ref result);
 
             PrintResult(p, pactual, result);
 
@@ -272,8 +260,8 @@ namespace MPFitLib.Test
         {
             const double intercept = 7.0;
             const double slope = -3.0;
-            var pactual = new double[] { intercept, slope };
-            var p = new double[] { 5.9, -1.1 };
+            var pactual = new[] { intercept, slope };
+            var p = new[] { 5.9, -1.1 };
             var x = new double[] { -5, -3, -1, 0, 1, 3, 5 };
             var y = new double[x.Length];
 
@@ -283,7 +271,7 @@ namespace MPFitLib.Test
                 y[i] = intercept + slope * x[i];
             }
 
-            var mpPar = new mp_par[] { new mp_par(), new mp_par() };
+            var mpPar = new[] { new mp_par(), new mp_par() };
             mpPar[0].side = 3;
             mpPar[1].side = 3;
 
@@ -314,7 +302,7 @@ namespace MPFitLib.Test
                 1.5646480E+00, 5.2322268E+00, 4.2543168E+00,
                 6.2792623E-01
             };
-            double[] ey = new double[10];
+            var ey = new double[10];
             double[] p = { 0.0, 1.0, 1.0, 1.0 };        // Initial conditions
            double[] pactual = { 0.0, 4.70, 0.0, 0.5 };  // Actual values used to make data
             mp_par[] pars = {
@@ -324,19 +312,19 @@ namespace MPFitLib.Test
                 new mp_par {side = 1, deriv_debug = 0}
             };
 
-            mp_result result = new mp_result(4);
+            var result = new mp_result(4);
 
             /* No constraints */
 
             for (uint i = 0; i < 10; i++) ey[i] = 0.5;
 
-            CustomUserVariable v = new CustomUserVariable { X = x, Y = y, Ey = ey };
+            var v = new CustomUserVariable { X = x, Y = y, Ey = ey };
 
             /* Call fitting function for 10 data points and 4 parameters (no
                parameters fixed) */
 
             var logger = new System.IO.StringWriter();
-            int status = MPFit.Solve(ForwardModels.GaussianFuncAndDerivs, 10, 4, p, pars, null, v, ref result, logger);
+            var status = MPFit.Solve(ForwardModels.GaussianFuncAndDerivs, 10, 4, p, pars, null, v, ref result, logger);
 
             PrintResult(p, pactual, result);
             Console.WriteLine(logger.ToString());
@@ -346,34 +334,36 @@ namespace MPFitLib.Test
         }
 
         /* Simple routine to print the fit results */
-        private static void PrintResult(double[] x, double[] xact, mp_result result)
+        private static void PrintResult(double[] x, double[]? xact, mp_result? result)
         {
             int i;
 
-            if (x == null) return;
+            if (result != null)
+            {
+                Console.Write("  CHI-SQUARE = {0}    ({1} DOF)\n",
+                    result.bestnorm, result.nfunc - result.nfree);
+                Console.Write("        NPAR = {0}\n", result.npar);
+                Console.Write("       NFREE = {0}\n", result.nfree);
+                Console.Write("     NPEGGED = {0}\n", result.npegged);
+                Console.Write("       NITER = {0}\n", result.niter);
+                Console.Write("        NFEV = {0}\n", result.nfev);
+                Console.Write("\n");
+            }
 
-            Console.Write("  CHI-SQUARE = {0}    ({1} DOF)\n",
-             result.bestnorm, result.nfunc - result.nfree);
-            Console.Write("        NPAR = {0}\n", result.npar);
-            Console.Write("       NFREE = {0}\n", result.nfree);
-            Console.Write("     NPEGGED = {0}\n", result.npegged);
-            Console.Write("       NITER = {0}\n", result.niter);
-            Console.Write("        NFEV = {0}\n", result.nfev);
-            Console.Write("\n");
             if (xact != null)
             {
-                for (i = 0; i < result.npar; i++)
+                for (i = 0; i < x.Length; i++)
                 {
                     Console.Write("  P[{0}] = {1} +/- {2}     (ACTUAL {3})\n",
-                       i, x[i], result.xerror[i], xact[i]);
+                       i, x[i], result?.xerror[i], xact[i]);
                 }
             }
             else
             {
-                for (i = 0; i < result.npar; i++)
+                for (i = 0; i < x.Length; i++)
                 {
                     Console.Write("  P[{0}] = {1} +/- {2}\n",
-                       i, x[i], result.xerror[i]);
+                       i, x[i], result?.xerror[i]);
                 }
             }
         }

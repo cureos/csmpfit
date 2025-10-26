@@ -5,7 +5,7 @@
  *   (Argonne National Laboratory, MINPACK project, March 1980)
  * See the file DISCLAIMER for copyright information.
  * 
- * Tranlation to C Language by S. Moshier (moshier.net)
+ * Translation to C Language by S. Moshier (moshier.net)
  * Translation to C# Language by D. Cuccia (http://davidcuccia.wordpress.com)
  * 
  * Enhancements and packaging by C. Markwardt
@@ -25,9 +25,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-// ReSharper disable IdentifierTypo
+// ReSharper disable CompareOfFloatsByEqualityOperator
 
 namespace MPFitLib
 {
@@ -59,14 +58,13 @@ namespace MPFitLib
         public const int MP_XTOL = 7;              /* xtol is too small; no further improvement*/
         public const int MP_GTOL = 8;              /* gtol is too small; no further improvement*/
 
-
 #if FLOAT_PRECISION
-            /* Float precision */
-            public const float  MP_MACHEP0  =1.19209e-07;
-            public const float  MP_DWARF   = 1.17549e-38;
-            public const float  MP_GIANT   = 3.40282e+38;
-            public const float MP_RDWARF = 1.3278686946331594e-018;
-            public const float MP_RGIANT = 1844673472786071600;
+        /* Float precision */
+        public const float MP_MACHEP0  =1.19209e-07;
+        public const float MP_DWARF   = 1.17549e-38;
+        public const float MP_GIANT   = 3.40282e+38;
+        public const float MP_RDWARF = 1.3278686946331594e-018;
+        public const float MP_RGIANT = 1844673472786071600;
 #else
         /* Double precision numeric constants */
         public const double MP_MACHEP0 = 2.2204460e-16;
@@ -376,14 +374,12 @@ namespace MPFitLib
               double[] xall, mp_par[]? pars, mp_config? config, object? prv,
               ref mp_result? result, TextWriter? logger = null)
         {
-            mp_config conf = new mp_config();
-            int i, j, info, iflag, nfree, npegged, iter;
-            int qanylim = 0;
+            var conf = new mp_config();
+            int i, j;
+            var qanylim = 0;
 
-            int ij, jj, l;
-            double actred, delta, dirder, fnorm, fnorm1, gnorm, orignorm;
-            double par, pnorm, prered, ratio;
-            double sum, temp, temp1, temp2, temp3, xnorm, alpha;
+            int ij, l;
+            double sum, temp;
             const double one = 1.0;
             const double p1 = 0.1;
             const double p5 = 0.5;
@@ -391,10 +387,7 @@ namespace MPFitLib
             const double p75 = 0.75;
             const double p0001 = 1.0e-4;
             const double zero = 0.0;
-            int nfev = 0;
-
-            double[] step, dstep;
-            int[] pfixed, mpside, ifree;
+            var nfev = 0;
 
             // explicitly setting to null to avoid compiler 
             // identification of uninitialized arrays
@@ -402,29 +395,6 @@ namespace MPFitLib
             int[]? qllim = null;
             double[]? ulim = null;
             double[]? llim = null;
-
-            int[] ddebug;
-            double[] ddrtol, ddatol;
-
-            double[] fvec, qtf;
-            double[] x, xnew, fjac, diag;
-            double[] wa1, wa2, wa3, wa4;
-            int[] ipvt;
-
-            int ldfjac;
-
-            /* Default configuration */
-            conf.ftol = 1e-10;
-            conf.xtol = 1e-10;
-            conf.gtol = 1e-10;
-            conf.stepfactor = 100.0;
-            conf.nprint = 1;
-            conf.epsfcn = MP_MACHEP0;
-            conf.maxiter = 200;
-            conf.douserscale = 0;
-            conf.maxfev = 0;
-            conf.covtol = 1e-14;
-            conf.nofinitecheck = 0;
 
             if (config != null)
             {
@@ -443,18 +413,11 @@ namespace MPFitLib
                 conf.maxfev = config.maxfev;
             }
 
-            info = MP_ERR_INPUT; /* = 0 */
-            iflag = 0;
-            nfree = 0;
-            npegged = 0;
+            var info = MP_ERR_INPUT /* = 0 */;
 
             /* Basic error checking */
-            if (funct == null)
-            {
-                return MP_ERR_FUNC;
-            }
 
-            if ((m <= 0) || (xall == null))
+            if (m <= 0)
             {
                 return MP_ERR_NPOINTS;
             }
@@ -464,13 +427,11 @@ namespace MPFitLib
                 return MP_ERR_NFREE;
             }
 
-            fnorm = -1.0;
-            fnorm1 = -1.0;
-            xnorm = -1.0;
-            delta = 0.0;
+            var xnorm = -1.0;
+            var delta = 0.0;
 
             /* FIXED parameters? */
-            pfixed = new int[npar];
+            var pfixed = new int[npar];
             if (pars != null)
             {
                 for (i = 0; i < npar; i++)
@@ -480,12 +441,12 @@ namespace MPFitLib
             }
 
             /* Finite differencing step, absolute and relative, and sidedness of deriv */
-            step = new double[npar];
-            dstep = new double[npar];
-            mpside = new int[npar];
-            ddebug = new int[npar];
-            ddrtol = new double[npar];
-            ddatol = new double[npar];
+            var step = new double[npar];
+            var dstep = new double[npar];
+            var mpside = new int[npar];
+            var ddebug = new int[npar];
+            var ddrtol = new double[npar];
+            var ddatol = new double[npar];
 
             if (pars != null)
             {
@@ -501,8 +462,8 @@ namespace MPFitLib
             }
 
             /* Finish up the free parameters */
-            nfree = 0;
-            ifree = new int[npar];
+            var nfree = 0;
+            var ifree = new int[npar];
             for (i = 0, j = 0; i < npar; i++)
             {
                 if (pfixed[i] == 0)
@@ -522,16 +483,16 @@ namespace MPFitLib
                 for (i = 0; i < npar; i++)
                 {
                     if (
-                        (pars[i].limited[0] != 0 && (xall[i] < pars[i].limits[0])) ||
-                        (pars[i].limited[1] != 0 && (xall[i] > pars[i].limits[1])))
+                        (pars[i].limited[0] != 0 && xall[i] < pars[i].limits[0]) ||
+                        (pars[i].limited[1] != 0 && xall[i] > pars[i].limits[1]))
                     {
                         info = MP_ERR_INITBOUNDS;
                         return info;
                     }
-                    if ((pars[i].isFixed != 0) &&
-                        (pars[i].limited[0] != 0) &&
-                        (pars[i].limited[1] != 0) &&
-                        (pars[i].limits[0] >= pars[i].limits[1]))
+                    if (pars[i].isFixed != 0 &&
+                        pars[i].limited[0] != 0 &&
+                        pars[i].limited[1] != 0 &&
+                        pars[i].limits[0] >= pars[i].limits[1])
                     {
                         info = MP_ERR_BOUNDS;
                         return info;
@@ -557,9 +518,9 @@ namespace MPFitLib
             }
 
             /* Sanity checking on input configuration */
-            if ((npar <= 0) || (conf.ftol <= 0) || (conf.xtol <= 0) ||
-                (conf.gtol <= 0) || (conf.maxiter < 0) ||
-                (conf.stepfactor <= 0))
+            if (npar <= 0 || conf.ftol <= 0 || conf.xtol <= 0 ||
+                conf.gtol <= 0 || conf.maxiter < 0 ||
+                conf.stepfactor <= 0)
             {
                 info = MP_ERR_PARAM;
                 return info;
@@ -573,32 +534,31 @@ namespace MPFitLib
             }
 
             /* Allocate temporary storage */
-            fvec = new double[m];
-            qtf = new double[nfree];
-            x = new double[nfree];
-            xnew = new double[npar];
-            fjac = new double[m * nfree];
+            var fvec = new double[m];
+            var qtf = new double[nfree];
+            var x = new double[nfree];
+            var xnew = new double[npar];
+            var fjac = new double[m * nfree];
 
-            ldfjac = m;
-            diag = new double[npar];
-            wa1 = new double[npar];
-            wa2 = new double[m]; /* Maximum usage is "m" in mpfit_fdjac2() */
-            wa3 = new double[npar];
-            wa4 = new double[m];
-            ipvt = new int[npar];
+            var ldfjac = m;
+            var diag = new double[npar];
+            var wa1 = new double[npar];
+            var wa2 = new double[m] /* Maximum usage is "m" in mpfit_fdjac2() */;
+            var wa3 = new double[npar];
+            var wa4 = new double[m];
+            var ipvt = new int[npar];
 
             /* Evaluate user function with initial parameter values */
             IList<double>[]? ignore = null;
-            iflag = funct(xall, ref fvec, ref ignore, prv);
-            //iflag = funct(m, npar, xall, fvec, null, prv);
+            var iflag = funct(xall, ref fvec, ref ignore, prv);
             nfev += 1;
             if (iflag < 0)
             {
                 return info;
             }
 
-            fnorm = mp_enorm(m, fvec);
-            orignorm = fnorm * fnorm;
+            var fnorm = mp_enorm(m, fvec);
+            var orignorm = fnorm * fnorm;
 
             /* Make a new copy */
             for (i = 0; i < npar; i++)
@@ -612,17 +572,16 @@ namespace MPFitLib
                 x[i] = xall[ifree[i]];
             }
 
-            /* Initialize Levelberg-Marquardt parameter and iteration counter */
-
-            par = 0.0;
-            iter = 1;
+            /* Initialize Levenberg-Marquardt parameter and iteration counter */
+            var par = 0.0;
+            var iter = 1;
             for (i = 0; i < nfree; i++)
             {
                 qtf[i] = 0;
             }
 
-          /* Beginning of the outer loop */
-        OUTER_LOOP:
+            /* Beginning of the outer loop */
+            OUTER_LOOP:
             for (i = 0; i < nfree; i++)
             {
                 xnew[ifree[i]] = x[i];
@@ -631,7 +590,7 @@ namespace MPFitLib
             /* XXX call iterproc */
 
             /* Calculate the jacobian matrix */
-            iflag = mp_fdjac2(funct, m, nfree, ifree, npar, xnew, fvec, fjac, ldfjac,
+            iflag = mp_fdjac2(funct, m, nfree, ifree, npar, xnew, fvec, fjac,
                       conf.epsfcn, wa4, prv, ref nfev,
                       step, dstep, mpside, qulim, ulim,
                       ddebug, ddrtol, ddatol, wa2, logger);
@@ -646,8 +605,8 @@ namespace MPFitLib
             {
                 for (j = 0; j < nfree; j++)
                 {
-                    int lpegged = (qllim![j] != 0 && (x[j] == llim![j])) ? 1 : 0;
-                    int upegged = (qulim![j] != 0 && (x[j] == ulim![j])) ? 1 : 0;
+                    var lpegged = qllim![j] != 0 && x[j] == llim![j] ? 1 : 0;
+                    var upegged = qulim![j] != 0 && x[j] == ulim![j] ? 1 : 0;
                     sum = 0;
 
                     /* If the parameter is pegged at a limit, compute the gradient direction */
@@ -660,13 +619,13 @@ namespace MPFitLib
                         }
                     }
                     /* If pegged at lower limit and gradient is toward negative then reset gradient to zero */
-                    if (lpegged != 0 && (sum > 0))
+                    if (lpegged != 0 && sum > 0)
                     {
                         ij = j * ldfjac;
                         for (i = 0; i < m; i++, ij++) fjac[ij] = 0;
                     }
                     /* If pegged at upper limit and gradient is toward positive then reset gradient to zero */
-                    if (upegged != 0 && (sum < 0))
+                    if (upegged != 0 && sum < 0)
                     {
                         ij = j * ldfjac;
                         for (i = 0; i < m; i++, ij++) fjac[ij] = 0;
@@ -675,7 +634,7 @@ namespace MPFitLib
             }
 
             /* Compute the QR factorization of the jacobian */
-            mp_qrfac(m, nfree, fjac, ldfjac, 1, ipvt, nfree, wa1, wa2, wa3);
+            mp_qrfac(m, nfree, fjac, 1, ipvt, wa1, wa2, wa3);
 
             /*
              *	 on the first iteration and if mode is 1, scale according
@@ -718,10 +677,10 @@ namespace MPFitLib
                 wa4[i] = fvec[i];
             }
 
-            jj = 0;
+            var jj = 0;
             for (j = 0; j < nfree; j++)
             {
-                temp3 = fjac[jj];
+                var temp3 = fjac[jj];
                 if (temp3 != zero)
                 {
                     sum = zero;
@@ -775,7 +734,7 @@ namespace MPFitLib
             /*
              *	 compute the norm of the scaled gradient.
              */
-            gnorm = zero;
+            var gnorm = zero;
             if (fnorm != zero)
             {
                 jj = 0;
@@ -800,6 +759,7 @@ namespace MPFitLib
             /*
              *	 test for convergence of the gradient norm.
              */
+            double fnorm1 = -1;
             if (gnorm <= conf.gtol) info = MP_OK_DIR;
             if (info != 0) goto L300;
             if (conf.maxiter == 0)
@@ -819,10 +779,10 @@ namespace MPFitLib
                 }
             }
 
-          /*
-           *	 beginning of the inner loop.
-           */
-        L200:
+            /*
+             *	 beginning of the inner loop.
+             */
+            L200:
             /*
              *	    determine the levenberg-marquardt parameter.
              */
@@ -835,7 +795,7 @@ namespace MPFitLib
                 wa1[j] = -wa1[j];
             }
 
-            alpha = 1.0;
+            var alpha = 1.0;
             if (qanylim == 0)
             {
                 /* No parameter limits, so just move to new position WA2 */
@@ -853,18 +813,18 @@ namespace MPFitLib
                  */
                 for (j = 0; j < nfree; j++)
                 {
-                    int lpegged = (qllim![j] != 0 && (x[j] <= llim![j])) ? 1 : 0;
-                    int upegged = (qulim![j] != 0 && (x[j] >= ulim![j])) ? 1 : 0;
-                    int dwa1 = Math.Abs(wa1[j]) > MP_MACHEP0 ? 1 : 0;
+                    var lpegged = qllim![j] != 0 && x[j] <= llim![j] ? 1 : 0;
+                    var upegged = qulim![j] != 0 && x[j] >= ulim![j] ? 1 : 0;
+                    var dwa1 = Math.Abs(wa1[j]) > MP_MACHEP0 ? 1 : 0;
 
-                    if (lpegged != 0 && (wa1[j] < 0)) wa1[j] = 0;
-                    if (upegged != 0 && (wa1[j] > 0)) wa1[j] = 0;
+                    if (lpegged != 0 && wa1[j] < 0) wa1[j] = 0;
+                    if (upegged != 0 && wa1[j] > 0) wa1[j] = 0;
 
-                    if (dwa1 != 0 && qllim[j] != 0 && ((x[j] + wa1[j]) < llim![j]))
+                    if (dwa1 != 0 && qllim[j] != 0 && x[j] + wa1[j] < llim![j])
                     {
                         alpha = mp_dmin1(alpha, (llim[j] - x[j]) / wa1[j]);
                     }
-                    if (dwa1 != 0 && qulim[j] != 0 && ((x[j] + wa1[j]) > ulim![j]))
+                    if (dwa1 != 0 && qulim[j] != 0 && x[j] + wa1[j] > ulim![j])
                     {
                         alpha = mp_dmin1(alpha, (ulim[j] - x[j]) / wa1[j]);
                     }
@@ -873,25 +833,22 @@ namespace MPFitLib
                 /* Scale the resulting vector, advance to the next position */
                 for (j = 0; j < nfree; j++)
                 {
-                    double sgnu, sgnl;
-                    double ulim1, llim1;
-
-                    wa1[j] = wa1[j] * alpha;
+                    wa1[j] *= alpha;
                     wa2[j] = x[j] + wa1[j];
 
                     /* Adjust the output values.  If the step put us exactly
                      * on a boundary, make sure it is exact.
                      */
-                    sgnu = (ulim![j] >= 0) ? (+1) : (-1);
-                    sgnl = (llim![j] >= 0) ? (+1) : (-1);
-                    ulim1 = ulim[j] * (1 - sgnu * MP_MACHEP0) - ((ulim[j] == 0) ? (MP_MACHEP0) : 0);
-                    llim1 = llim[j] * (1 + sgnl * MP_MACHEP0) + ((llim[j] == 0) ? (MP_MACHEP0) : 0);
+                    double sgnu = ulim![j] >= 0 ? +1 : -1;
+                    double sgnl = llim![j] >= 0 ? +1 : -1;
+                    var ulim1 = ulim[j] * (1 - sgnu * MP_MACHEP0) - (ulim[j] == 0 ? MP_MACHEP0 : 0);
+                    var llim1 = llim[j] * (1 + sgnl * MP_MACHEP0) + (llim[j] == 0 ? MP_MACHEP0 : 0);
 
-                    if (qulim![j] != 0 && (wa2[j] >= ulim1))
+                    if (qulim![j] != 0 && wa2[j] >= ulim1)
                     {
                         wa2[j] = ulim[j];
                     }
-                    if (qllim![j] != 0 && (wa2[j] <= llim1))
+                    if (qllim![j] != 0 && wa2[j] <= llim1)
                     {
                         wa2[j] = llim[j];
                     }
@@ -903,7 +860,7 @@ namespace MPFitLib
                 wa3[j] = diag[ifree[j]] * wa1[j];
             }
 
-            pnorm = mp_enorm(nfree, wa3);
+            var pnorm = mp_enorm(nfree, wa3);
 
             /*
              *	    on the first iteration, adjust the initial step bound.
@@ -922,7 +879,6 @@ namespace MPFitLib
             }
 
             iflag = funct(xnew, ref wa4, ref ignore, prv);
-            //iflag = funct(m, npar, xnew, wa4, null, prv);
             nfev += 1;
             if (iflag < 0) goto L300;
 
@@ -931,8 +887,8 @@ namespace MPFitLib
             /*
              *	    compute the scaled actual reduction.
              */
-            actred = -one;
-            if ((p1 * fnorm1) < fnorm)
+            var actred = -one;
+            if (p1 * fnorm1 < fnorm)
             {
                 temp = fnorm1 / fnorm;
                 actred = one - temp * temp;
@@ -960,17 +916,16 @@ namespace MPFitLib
             /* Remember, alpha is the fraction of the full LM step actually
              * taken
              */
-
-            temp1 = mp_enorm(nfree, wa3) * alpha / fnorm;
-            temp2 = (Math.Sqrt(alpha * par) * pnorm) / fnorm;
-            prered = temp1 * temp1 + (temp2 * temp2) / p5;
-            dirder = -(temp1 * temp1 + temp2 * temp2);
+            var temp1 = mp_enorm(nfree, wa3) * alpha / fnorm;
+            var temp2 = Math.Sqrt(alpha * par) * pnorm / fnorm;
+            var prered = temp1 * temp1 + temp2 * temp2 / p5;
+            var dirder = -(temp1 * temp1 + temp2 * temp2);
 
             /*
              *	    compute the ratio of the actual to the predicted
              *	    reduction.
              */
-            ratio = zero;
+            var ratio = zero;
             if (prered != zero)
             {
                 ratio = actred / prered;
@@ -990,17 +945,17 @@ namespace MPFitLib
                 {
                     temp = p5 * dirder / (dirder + p5 * actred);
                 }
-                if (((p1 * fnorm1) >= fnorm)
-                || (temp < p1))
+                if (p1 * fnorm1 >= fnorm
+                || temp < p1)
                 {
                     temp = p1;
                 }
                 delta = temp * mp_dmin1(delta, pnorm / p1);
-                par = par / temp;
+                par /= temp;
             }
             else
             {
-                if ((par == zero) || (ratio >= p75))
+                if (par == zero || ratio >= p75)
                 {
                     delta = pnorm / p5;
                     par = p5 * par;
@@ -1033,8 +988,8 @@ namespace MPFitLib
             /*
              *	    tests for convergence.
              */
-            if ((Math.Abs(actred) <= conf.ftol) && (prered <= conf.ftol) &&
-                (p5 * ratio <= one))
+            if (Math.Abs(actred) <= conf.ftol && prered <= conf.ftol &&
+                p5 * ratio <= one)
             {
                 info = MP_OK_CHI;
             }
@@ -1042,8 +997,8 @@ namespace MPFitLib
             {
                 info = MP_OK_PAR;
             }
-            if ((Math.Abs(actred) <= conf.ftol) && (prered <= conf.ftol) && (p5 * ratio <= one)
-                && (info == 2))
+            if (Math.Abs(actred) <= conf.ftol && prered <= conf.ftol && p5 * ratio <= one
+                && info == 2)
             {
                 info = MP_OK_BOTH;
             }
@@ -1055,7 +1010,7 @@ namespace MPFitLib
             /*
              *	    tests for termination and stringent tolerances.
              */
-            if ((conf.maxfev > 0) && (nfev >= conf.maxfev))
+            if (conf.maxfev > 0 && nfev >= conf.maxfev)
             {
                 /* Too many function evaluations */
                 info = MP_MAXITER;
@@ -1065,7 +1020,7 @@ namespace MPFitLib
                 /* Too many iterations */
                 info = MP_MAXITER;
             }
-            if ((Math.Abs(actred) <= MP_MACHEP0) && (prered <= MP_MACHEP0) && (p5 * ratio <= one))
+            if (Math.Abs(actred) <= MP_MACHEP0 && prered <= MP_MACHEP0 && p5 * ratio <= one)
             {
                 info = MP_FTOL;
             }
@@ -1099,30 +1054,28 @@ namespace MPFitLib
             {
                 info = iflag;
             }
-            iflag = 0;
 
             for (i = 0; i < nfree; i++)
             {
                 xall[ifree[i]] = x[i];
             }
 
-            if ((conf.nprint > 0) && (info > 0))
+            if (conf.nprint > 0 && info > 0)
             {
-                iflag = funct(xall,ref fvec, ref ignore, prv);
-                //iflag = funct(m, npar, xall, fvec, null, prv);
+                funct(xall,ref fvec, ref ignore, prv);
                 nfev += 1;
             }
 
             /* Compute number of pegged parameters */
-            npegged = 0;
+            var npegged = 0;
             if (pars != null) for (i = 0; i < npar; i++)
+            {
+                if ((pars[i].limited[0] != 0 && pars[i].limits[0] == xall[i]) ||
+                    (pars[i].limited[1] != 0 && pars[i].limits[1] == xall[i]))
                 {
-                    if ((pars[i].limited[0] != 0 && (pars[i].limits[0] == xall[i])) ||
-                    (pars[i].limited[1] != 0 && (pars[i].limits[1] == xall[i])))
-                    {
-                        npegged++;
-                    }
+                    npegged++;
                 }
+            }
 
             /* Compute and return the covariance matrix and/or parameter errors */
             if (result != null && result.covar != null)
@@ -1132,7 +1085,7 @@ namespace MPFitLib
                 if (result.covar != null)
                 {
                     /* Zero the destination covariance array */
-                    for (j = 0; j < (npar * npar); j++) result.covar[j] = 0;
+                    for (j = 0; j < npar * npar; j++) result.covar[j] = 0;
 
                     /* Transfer the covariance array */
                     for (j = 0; j < nfree; j++)
@@ -1148,7 +1101,7 @@ namespace MPFitLib
 
                 for (j = 0; j < nfree; j++)
                 {
-                    double cc = fjac[j * ldfjac + j];
+                    var cc = fjac[j * ldfjac + j];
                     if (cc > 0)
                     {
                         result.xerror[ifree[j]] = Math.Sqrt(cc);
@@ -1184,7 +1137,7 @@ namespace MPFitLib
 
         private static int mp_fdjac2(mp_func_ref funct,
                   int m, int n, int[] ifree, int npar, double[] x, double[] fvec,
-                  double[] fjac, int ldfjac, double epsfcn,
+                  double[] fjac, double epsfcn,
                   double[] wa, object? priv, ref int nfev,
                   double[] step, double[] dstep, int[] dside,
                   int[]? qulimited, double[]? ulimit,
@@ -1269,24 +1222,18 @@ namespace MPFitLib
             *
                   **********
             */
-            int i, j, ij;
-            int iflag = 0;
-            double eps, h, temp;
+            int j;
+            var iflag = 0;
             const double zero = 0.0;
             int hasAnalyticalDeriv = 0, hasNumericalDeriv = 0;
-            int hasDebugDeriv = 0;
+            var hasDebugDeriv = 0;
 
-            temp = mp_dmax1(epsfcn, MP_MACHEP0);
-            eps = Math.Sqrt(temp);
-            ij = 0;
-            
-            //for (j = 0; j < npar; j++)
-            //{
-            //    dvec[j] = 0;
-            //}
+            var temp = mp_dmax1(epsfcn, MP_MACHEP0);
+            var eps = Math.Sqrt(temp);
+            var ij = 0;
 
             /* Initialize the Jacobian derivative matrix */
-            for (j = 0; j < (n * m); j++)
+            for (j = 0; j < n * m; j++)
             {
                 fjac[j] = 0;
             }
@@ -1323,17 +1270,16 @@ namespace MPFitLib
             if (hasAnalyticalDeriv != 0)
             {
                 iflag = funct(x, ref wa, ref dvec, priv);
-                //iflag = funct(m, npar, x, wa, dvec, priv);
-                if (nfev != 0) nfev = nfev + 1;  //todo: correct translation from C?
+                if (nfev != 0) nfev += 1;
                 if (iflag < 0) goto DONE;
             }
 
             if (hasDebugDeriv != 0)
             {
-                if (logger != null) logger.Write("FJAC DEBUG BEGIN\n");
+                logger?.Write("FJAC DEBUG BEGIN\n");
                 //Console.Write("#  %10s %10s %10s %10s %10s %10s\n",
-                if (logger != null) logger.Write("#  {0} {1} {2} {3} {4} {5}\n",
-                   "IPNT", "FUNC", "DERIV_U", "DERIV_N", "DIFF_ABS", "DIFF_REL");
+                logger?.Write("#  {0} {1} {2} {3} {4} {5}\n",
+                    "IPNT", "FUNC", "DERIV_U", "DERIV_N", "DIFF_ABS", "DIFF_REL");
             }
 
             /* Any parameters requiring numerical derivatives */
@@ -1341,14 +1287,14 @@ namespace MPFitLib
             {
                 for (j = 0; j < n; j++)
                 {  /* Loop thru free parms */
-                    int dsidei = (dside != null) ? dside[ifree[j]] : 0;
-                    int debug = ddebug[ifree[j]];
+                    var dsidei = dside != null ? dside[ifree[j]] : 0;
+                    var debug = ddebug[ifree[j]];
                     double dr = ddrtol[ifree[j]], da = ddatol[ifree[j]];
 
                     /* Check for debugging */
                     if (debug != 0)
                     {
-                        if (logger != null) logger.Write("FJAC PARM {0}\n", ifree[j]);
+                        logger?.Write("FJAC PARM {0}\n", ifree[j]);
                     }
 
                     /* Skip parameters already done by user-computed partials */
@@ -1359,7 +1305,7 @@ namespace MPFitLib
                     }
 
                     temp = x[ifree[j]];
-                    h = eps * Math.Abs(temp);
+                    var h = eps * Math.Abs(temp);
                     if (step != null && step[ifree[j]] > 0) h = step[ifree[j]];
                     if (dstep != null && dstep[ifree[j]] > 0) h = Math.Abs(dstep[ifree[j]] * temp);
                     if (h == zero) h = eps;
@@ -1368,7 +1314,7 @@ namespace MPFitLib
                     if ((dside != null && dsidei == -1) ||
                         (dside != null && dsidei == 0 &&
                          qulimited != null && ulimit != null && qulimited[j] != 0 &&
-                         (temp > (ulimit[j] - h))))
+                         temp > ulimit[j] - h))
                     {
                         h = -h;
                     }
@@ -1376,10 +1322,9 @@ namespace MPFitLib
                     x[ifree[j]] = temp + h;
                     IList<double>[]? ignore = null;
                     iflag = funct(x, ref wa, ref ignore, priv);
-                    //iflag = funct(m, npar, x, wa, null, priv);
                     if (nfev != 0)
                     {
-                        nfev = nfev + 1; // todo: C-C# translation correct?
+                        nfev += 1;
                     }
                     if (iflag < 0)
                     {
@@ -1387,6 +1332,7 @@ namespace MPFitLib
                     }
                     x[ifree[j]] = temp;
 
+                    int i;
                     if (dsidei <= 1)
                     {
                         /* COMPUTE THE ONE-SIDED DERIVATIVE */
@@ -1403,15 +1349,15 @@ namespace MPFitLib
                             /* Debug path for correctness */
                             for (i = 0; i < m; i++, ij++)
                             {
-                                double fjold = fjac[ij];
+                                var fjold = fjac[ij];
                                 fjac[ij] = (wa[i] - fvec[i]) / h; /* fjac[i+m*j] */
                                 if ((da == 0 && dr == 0 && (fjold != 0 || fjac[ij] != 0)) ||
-                                    ((da != 0 || dr != 0) && (Math.Abs(fjold - fjac[ij]) > da + Math.Abs(fjold) * dr)))
+                                    ((da != 0 || dr != 0) && Math.Abs(fjold - fjac[ij]) > da + Math.Abs(fjold) * dr))
                                 {
                                     //Console.Write("   %10d %10.4g %10.4g %10.4g %10.4g %10.4g\n",
-                                    if (logger != null) logger.Write("   {0} {1} {2} {3} {4} {5}\n",
-                                       i, fvec[i], fjold, fjac[ij], fjold - fjac[ij],
-                                       (fjold == 0) ? (0) : ((fjold - fjac[ij]) / fjold));
+                                    logger?.Write("   {0} {1} {2} {3} {4} {5}\n",
+                                        i, fvec[i], fjold, fjac[ij], fjold - fjac[ij],
+                                        fjold == 0 ? 0 : (fjold - fjac[ij]) / fjold);
                                 }
                             }
                         } /* end debugging */
@@ -1427,8 +1373,7 @@ namespace MPFitLib
                         /* Evaluate at x - h */
                         x[ifree[j]] = temp - h;
                         iflag = funct(x, ref wa, ref ignore, priv);
-                        //iflag = funct(m, npar, x, wa, null, priv);
-                        if (nfev != 0) nfev = nfev + 1; // todo: correct translation from C?
+                        if (nfev != 0) nfev += 1;
                         if (iflag < 0) goto DONE;
                         x[ifree[j]] = temp;
 
@@ -1446,15 +1391,15 @@ namespace MPFitLib
                             /* Debug path for correctness */
                             for (i = 0; i < m; i++, ij++)
                             {
-                                double fjold = fjac[ij];
+                                var fjold = fjac[ij];
                                 fjac[ij] = (wa2[i] - wa[i]) / (2 * h); /* fjac[i+m*j] */
                                 if ((da == 0 && dr == 0 && (fjold != 0 || fjac[ij] != 0)) ||
-                                    ((da != 0 || dr != 0) && (Math.Abs(fjold - fjac[ij]) > da + Math.Abs(fjold) * dr)))
+                                    ((da != 0 || dr != 0) && Math.Abs(fjold - fjac[ij]) > da + Math.Abs(fjold) * dr))
                                 {
                                     //Console.Write("   %10d %10.4g %10.4g %10.4g %10.4g %10.4g\n",
-                                    if (logger != null) logger.Write("   {0} {1} {2} {3} {4} {5}\n",
-                                       i, fvec[i], fjold, fjac[ij], fjold - fjac[ij],
-                                       (fjold == 0) ? (0) : ((fjold - fjac[ij]) / fjold));
+                                    logger?.Write("   {0} {1} {2} {3} {4} {5}\n",
+                                        i, fvec[i], fjold, fjac[ij], fjold - fjac[ij],
+                                        fjold == 0 ? 0 : (fjold - fjac[ij]) / fjold);
                                 }
                             }
                         } /* end debugging */
@@ -1465,10 +1410,10 @@ namespace MPFitLib
 
             if (hasDebugDeriv != 0)
             {
-                if (logger != null) logger.Write("FJAC DEBUG END\n");
+                logger?.Write("FJAC DEBUG END\n");
             }
 
-        DONE:
+            DONE:
             if (iflag < 0) return iflag;
             return 0;
             /*
@@ -1479,8 +1424,8 @@ namespace MPFitLib
 
         /************************qrfac.c*************************/
 
-        private static void mp_qrfac(int m, int n, double[] a, int lda,
-                  int pivot, int[] ipvt, int lipvt,
+        private static void mp_qrfac(int m, int n, double[] a,
+                  int pivot, int[] ipvt,
                   double[] rdiag, double[] acnorm, double[] wa)
         {
             /*
@@ -1560,16 +1505,15 @@ namespace MPFitLib
             *
             *     **********
             */
-            int i, ij, jj, j, jp1, k, kmax, minmn;
-            double ajnorm, sum, temp;
+            int j;
             const double zero = 0.0;
             const double one = 1.0;
             const double p05 = 0.05;
             /*
              *     compute the initial column norms and initialize several arrays.
              */
-            ij = 0;
-            // references a range of values inside larger array a (pointer arithmatic work-around)
+            var ij = 0;
+            // references a range of values inside larger array a (pointer arithmetic work-around)
             ArraySegment<double> aTemp;
             for (j = 0; j < n; j++)
             {
@@ -1583,20 +1527,25 @@ namespace MPFitLib
                 }
                 ij += m; /* m*j */
             }
+
             /*
              *     reduce a to r with householder transformations.
              */
-            minmn = mp_min0(m, n);
+            var minmn = mp_min0(m, n);
             for (j = 0; j < minmn; j++)
             {
+                int i;
+                double temp;
+                int k;
                 if (pivot == 0)
                 {
                     goto L40;
                 }
+
                 /*
                  *	 bring the column of largest norm into the pivot position.
                  */
-                kmax = j;
+                var kmax = j;
                 for (k = j; k < n; k++)
                 {
                     if (rdiag[k] > rdiag[kmax])
@@ -1610,7 +1559,7 @@ namespace MPFitLib
                 }
 
                 ij = m * j;
-                jj = m * kmax;
+                var jj = m * kmax;
                 for (i = 0; i < m; i++)
                 {
                     temp = a[ij]; /* [i+m*j] */
@@ -1631,9 +1580,8 @@ namespace MPFitLib
                  *	 j-th column of a to a multiple of the j-th unit vector.
                  */
                 jj = j + m * j;
-                aTemp = new ArraySegment<double>(a, jj, m - j); // pointer arithmatic work-around 
-                //ajnorm = mp_enorm(m - j, &a[jj]);
-                ajnorm = mp_enorm(m - j, aTemp);
+                aTemp = new ArraySegment<double>(a, jj, m - j); // pointer arithmetic work-around 
+                var ajnorm = mp_enorm(m - j, aTemp);
                 if (ajnorm == zero)
                 {
                     goto L100;
@@ -1653,12 +1601,12 @@ namespace MPFitLib
                  *	 apply the transformation to the remaining columns
                  *	 and update the norms.
                  */
-                jp1 = j + 1;
+                var jp1 = j + 1;
                 if (jp1 < n)
                 {
                     for (k = jp1; k < n; k++)
                     {
-                        sum = zero;
+                        var sum = zero;
                         ij = j + m * k;
                         jj = j + m * j;
                         for (i = j; i < m; i++)
@@ -1676,16 +1624,15 @@ namespace MPFitLib
                             ij += 1; /* [i+m*k] */
                             jj += 1; /* [i+m*j] */
                         }
-                        if ((pivot != 0) && (rdiag[k] != zero))
+                        if (pivot != 0 && rdiag[k] != zero)
                         {
                             temp = a[j + m * k] / rdiag[k];
                             temp = mp_dmax1(zero, one - temp * temp);
                             rdiag[k] *= Math.Sqrt(temp);
                             temp = rdiag[k] / wa[k];
-                            if ((p05 * temp * temp) <= MP_MACHEP0)
+                            if (p05 * temp * temp <= MP_MACHEP0)
                             {
-                                aTemp = new ArraySegment<double>(a, jp1 + m * k, m - j - 1); // pointer arithmatic work-around
-                                //rdiag[k] = mp_enorm(m - j - 1, &a[jp1 + m * k]);
+                                aTemp = new ArraySegment<double>(a, jp1 + m * k, m - j - 1); // pointer arithmetic work-around
                                 rdiag[k] = mp_enorm(m - j - 1, aTemp);
                                 wa[k] = rdiag[k];
                             }
@@ -1693,7 +1640,7 @@ namespace MPFitLib
                     }
                 }
 
-            L100:
+                L100:
                 rdiag[j] = -ajnorm;
             }
             /*
@@ -1785,8 +1732,7 @@ namespace MPFitLib
             *
             *     **********
             */
-            int i, ij, ik, kk, j, jp1, k, kp1, l, nsing;
-            double cosx, cotan, qtbpj, sinx, sum, tanx, temp;
+            int i, ij, ik, j, k, l;
             const double zero = 0.0;
             const double p25 = 0.25;
             const double p5 = 0.5;
@@ -1795,7 +1741,7 @@ namespace MPFitLib
              *     copy r and (q transpose)*b to preserve input and initialize s.
              *     in particular, save the diagonal elements of r in x.
              */
-            kk = 0;
+            var kk = 0;
             for (j = 0; j < n; j++)
             {
                 ij = kk;
@@ -1831,7 +1777,7 @@ namespace MPFitLib
                  *	 modify only a single element of (q transpose)*b
                  *	 beyond the first n, which is initially zero.
                  */
-                qtbpj = zero;
+                var qtbpj = zero;
                 for (k = j; k < n; k++)
                 {
                     /*
@@ -1841,15 +1787,16 @@ namespace MPFitLib
                     if (sdiag[k] == zero)
                         continue;
                     kk = k + ldr * k;
+                    double cosx, sinx;
                     if (Math.Abs(r[kk]) < Math.Abs(sdiag[k]))
                     {
-                        cotan = r[kk] / sdiag[k];
+                        var cotan = r[kk] / sdiag[k];
                         sinx = p5 / Math.Sqrt(p25 + p25 * cotan * cotan);
                         cosx = sinx * cotan;
                     }
                     else
                     {
-                        tanx = sdiag[k] / r[kk];
+                        var tanx = sdiag[k] / r[kk];
                         cosx = p5 / Math.Sqrt(p25 + p25 * tanx * tanx);
                         sinx = cosx * tanx;
                     }
@@ -1858,13 +1805,13 @@ namespace MPFitLib
                      *	    the modified element of ((q transpose)*b,0).
                      */
                     r[kk] = cosx * r[kk] + sinx * sdiag[k];
-                    temp = cosx * wa[k] + sinx * qtbpj;
+                    var temp = cosx * wa[k] + sinx * qtbpj;
                     qtbpj = -sinx * wa[k] + cosx * qtbpj;
                     wa[k] = temp;
                     /*
-                     *	    accumulate the tranformation in the row of s.
+                     *	    accumulate the transformation in the row of s.
                      */
-                    kp1 = k + 1;
+                    var kp1 = k + 1;
                     if (n > kp1)
                     {
                         ik = kk + 1;
@@ -1877,7 +1824,7 @@ namespace MPFitLib
                         }
                     }
                 }
-            L90:
+                L90:
                 /*
                  *	 store the diagonal element of s and restore
                  *	 the corresponding diagonal element of r.
@@ -1886,14 +1833,15 @@ namespace MPFitLib
                 sdiag[j] = r[kk];
                 r[kk] = x[j];
             }
+
             /*
              *     solve the triangular system for z. if the system is
              *     singular, then obtain a least squares solution.
              */
-            nsing = n;
+            var nsing = n;
             for (j = 0; j < n; j++)
             {
-                if ((sdiag[j] == zero) && (nsing == n))
+                if (sdiag[j] == zero && nsing == n)
                     nsing = j;
                 if (nsing < n)
                     wa[j] = zero;
@@ -1904,8 +1852,8 @@ namespace MPFitLib
             for (k = 0; k < nsing; k++)
             {
                 j = nsing - k - 1;
-                sum = zero;
-                jp1 = j + 1;
+                var sum = zero;
+                var jp1 = j + 1;
                 if (nsing > jp1)
                 {
                     ij = jp1 + ldr * j;
@@ -1917,7 +1865,7 @@ namespace MPFitLib
                 }
                 wa[j] = (wa[j] - sum) / sdiag[j];
             }
-        L150:
+            L150:
             /*
              *     permute the components of z back to components of x.
              */
@@ -2032,11 +1980,9 @@ namespace MPFitLib
              *
              *     **********
              */
-            int i, iter, ij, jj, j, jm1, jp1, k, l, nsing;
-            double dxnorm, fp, gnorm, parc, parl, paru;
+            int i, ij, j, jm1, l;
             double sum, temp;
             const double zero = 0.0;
-            /* static double one = 1.0; */
             const double p1 = 0.1;
             const double p001 = 0.001;
 
@@ -2044,12 +1990,12 @@ namespace MPFitLib
              *     compute and store in x the gauss-newton direction. if the
              *     jacobian is rank-deficient, obtain a least squares solution.
              */
-            nsing = n;
-            jj = 0;
+            var nsing = n;
+            var jj = 0;
             for (j = 0; j < n; j++)
             {
                 wa1[j] = qtb[j];
-                if ((r[jj] == zero) && (nsing == n))
+                if (r[jj] == zero && nsing == n)
                     nsing = j;
                 if (nsing < n)
                     wa1[j] = zero;
@@ -2058,10 +2004,10 @@ namespace MPFitLib
 
             if (nsing >= 1)
             {
-                for (k = 0; k < nsing; k++)
+                for (var k = 0; k < nsing; k++)
                 {
                     j = nsing - k - 1;
-                    wa1[j] = wa1[j] / r[j + ldr * j];
+                    wa1[j] /= r[j + ldr * j];
                     temp = wa1[j];
                     jm1 = j - 1;
                     if (jm1 >= 0)
@@ -2081,28 +2027,30 @@ namespace MPFitLib
                 l = ipvt[j];
                 x[l] = wa1[j];
             }
+
             /*
              *     initialize the iteration counter.
              *     evaluate the function at the origin, and test
              *     for acceptance of the gauss-newton direction.
              */
-            iter = 0;
+            var iter = 0;
             for (j = 0; j < n; j++)
             {
                 wa2[j] = diag[ifree[j]] * x[j];
             }
-            dxnorm = mp_enorm(n, wa2);
-            fp = dxnorm - delta;
+            var dxnorm = mp_enorm(n, wa2);
+            var fp = dxnorm - delta;
             if (fp <= p1 * delta)
             {
                 goto L220;
             }
+
             /*
              *     if the jacobian is not rank deficient, the newton
              *     step provides a lower bound, parl, for the zero of
              *     the function. otherwise set this bound to zero.
              */
-            parl = zero;
+            var parl = zero;
             if (nsing >= n)
             {
                 for (j = 0; j < n; j++)
@@ -2128,7 +2076,7 @@ namespace MPFitLib
                     jj += ldr; /* [i+ldr*j] */
                 }
                 temp = mp_enorm(n, wa1);
-                parl = ((fp / delta) / temp) / temp;
+                parl = fp / delta / temp / temp;
             }
             /*
              *     calculate an upper bound, paru, for the zero of the function.
@@ -2147,8 +2095,8 @@ namespace MPFitLib
                 wa1[j] = sum / diag[ifree[l]];
                 jj += ldr; /* [i+ldr*j] */
             }
-            gnorm = mp_enorm(n, wa1);
-            paru = gnorm / delta;
+            var gnorm = mp_enorm(n, wa1);
+            var paru = gnorm / delta;
             if (paru == zero)
             {
                 paru = MP_DWARF / mp_dmin1(delta, p1);
@@ -2164,10 +2112,10 @@ namespace MPFitLib
                 par = gnorm / dxnorm;
             }
 
-          /*
-           *     beginning of an iteration.
-           */
-        L150:
+            /*
+             *     beginning of an iteration.
+             */
+            L150:
             iter += 1;
             /*
              *	 evaluate the function at the current value of par.
@@ -2194,9 +2142,9 @@ namespace MPFitLib
              *	 of par. also test for the exceptional cases where parl
              *	 is zero or the number of iterations has reached 10.
              */
-            if ((Math.Abs(fp) <= p1 * delta)
-                || ((parl == zero) && (fp <= temp) && (temp < zero))
-                || (iter == 10))
+            if (Math.Abs(fp) <= p1 * delta
+                || (parl == zero && fp <= temp && temp < zero)
+                || iter == 10)
                 goto L220;
             /*
              *	 compute the newton correction.
@@ -2209,9 +2157,9 @@ namespace MPFitLib
             jj = 0;
             for (j = 0; j < n; j++)
             {
-                wa1[j] = wa1[j] / sdiag[j];
+                wa1[j] /= sdiag[j];
                 temp = wa1[j];
-                jp1 = j + 1;
+                var jp1 = j + 1;
                 if (jp1 < n)
                 {
                     ij = jp1 + jj;
@@ -2224,7 +2172,7 @@ namespace MPFitLib
                 jj += ldr; /* ldr*j */
             }
             temp = mp_enorm(n, wa1);
-            parc = ((fp / delta) / temp) / temp;
+            var parc = fp / delta / temp / temp;
             /*
              *	 depending on the sign of the function, update parl or paru.
              */
@@ -2302,26 +2250,24 @@ namespace MPFitLib
              *
              *     **********
              */
-            int i;
-            double agiant, floatn, s1, s2, s3, xabs, x1max, x3max;
             double ans, temp;
-            double rdwarf = MP_RDWARF;
-            double rgiant = MP_RGIANT;
+            var rdwarf = MP_RDWARF;
+            var rgiant = MP_RGIANT;
             const double zero = 0.0;
             const double one = 1.0;
 
-            s1 = zero;
-            s2 = zero;
-            s3 = zero;
-            x1max = zero;
-            x3max = zero;
-            floatn = n;
-            agiant = rgiant / floatn;
+            var s1 = zero;
+            var s2 = zero;
+            var s3 = zero;
+            var x1max = zero;
+            var x3max = zero;
+            double floatn = n;
+            var agiant = rgiant / floatn;
 
-            for (i = 0; i < n; i++)
+            for (var i = 0; i < n; i++)
             {
-                xabs = Math.Abs(x[i]);
-                if ((xabs > rdwarf) && (xabs < agiant))
+                var xabs = Math.Abs(x[i]);
+                if (xabs > rdwarf && xabs < agiant)
                 {
                     /*
                      *	    sum for intermediate components.
@@ -2348,6 +2294,7 @@ namespace MPFitLib
                     }
                     continue;
                 }
+
                 /*
                  *	       sum for small components.
                  */
@@ -2366,28 +2313,29 @@ namespace MPFitLib
                     }
                 }
             }
+
             /*
              *     calculation of norm.
              */
             if (s1 != zero)
             {
-                temp = s1 + (s2 / x1max) / x1max;
+                temp = s1 + s2 / x1max / x1max;
                 ans = x1max * Math.Sqrt(temp);
-                return (ans);
+                return ans;
             }
             if (s2 != zero)
             {
                 if (s2 >= x3max)
-                    temp = s2 * (one + (x3max / s2) * (x3max * s3));
+                    temp = s2 * (one + x3max / s2 * (x3max * s3));
                 else
-                    temp = x3max * ((s2 / x3max) + (x3max * s3));
+                    temp = x3max * (s2 / x3max + x3max * s3);
                 ans = Math.Sqrt(temp);
             }
             else
             {
                 ans = x3max * Math.Sqrt(s3);
             }
-            return (ans);
+            return ans;
             /*
              *     last card of function enorm.
              */
@@ -2398,25 +2346,25 @@ namespace MPFitLib
         private static double mp_dmax1(double a, double b)
         {
             if (a >= b)
-                return (a);
+                return a;
             else
-                return (b);
+                return b;
         }
 
         private static double mp_dmin1(double a, double b)
         {
             if (a <= b)
-                return (a);
+                return a;
             else
-                return (b);
+                return b;
         }
 
         private static int mp_min0(int a, int b)
         {
             if (a <= b)
-                return (a);
+                return a;
             else
-                return (b);
+                return b;
         }
 
         /************************covar.c*************************/
@@ -2488,12 +2436,13 @@ namespace MPFitLib
         c     **********
         */
 
-        private static int mp_covar(int n, double[] r, int ldr, int[] ipvt, double tol, double[] wa)
+        private static void mp_covar(int n, double[] r, int ldr, int[] ipvt, double tol, double[] wa)
         {
-            int i, ii, j, jj, k, l;
-            int kk, kj, ji, j0, k0, jj0;
-            bool sing;
-            double one = 1.0, temp, tolr, zero = 0.0;
+            int i, j, k;
+            int j0, k0;
+            const double one = 1.0;
+            const double zero = 0.0;
+            double temp;
 
             /*
              * form the inverse of r in the full upper triangle of r.
@@ -2508,24 +2457,24 @@ namespace MPFitLib
           }
 #endif
 
-            tolr = tol * Math.Abs(r[0]);
-            l = -1;
+            var tolr = tol * Math.Abs(r[0]);
+            var l = -1;
             for (k = 0; k < n; k++)
             {
-                kk = k * ldr + k;
+                var kk = k * ldr + k;
                 if (Math.Abs(r[kk]) <= tolr) break;
 
                 r[kk] = one / r[kk];
                 for (j = 0; j < k; j++)
                 {
-                    kj = k * ldr + j;
+                    var kj = k * ldr + j;
                     temp = r[kk] * r[kj];
                     r[kj] = zero;
 
                     k0 = k * ldr; j0 = j * ldr;
                     for (i = 0; i <= j; i++)
                     {
-                        r[k0 + i] += (-temp * r[j0 + i]);
+                        r[k0 + i] += -temp * r[j0 + i];
                     }
                 }
                 l = k;
@@ -2567,16 +2516,16 @@ namespace MPFitLib
              */
             for (j = 0; j < n; j++)
             {
-                jj = ipvt[j];
-                sing = (j > l);
+                var jj = ipvt[j];
+                var sing = j > l;
                 j0 = j * ldr;
-                jj0 = jj * ldr;
+                var jj0 = jj * ldr;
                 for (i = 0; i <= j; i++)
                 {
-                    ji = j0 + i;
+                    var ji = j0 + i;
 
                     if (sing) r[ji] = zero;
-                    ii = ipvt[i];
+                    var ii = ipvt[i];
                     if (ii > jj) r[jj0 + ii] = r[ji];
                     if (ii < jj) r[ii * ldr + jj] = r[ji];
                 }
@@ -2604,8 +2553,6 @@ namespace MPFitLib
             Console.Write("\n");
           }
 #endif
-
-            return 0;
         }
 
     }

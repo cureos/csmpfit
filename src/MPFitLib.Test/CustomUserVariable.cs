@@ -19,7 +19,7 @@
 namespace MPFitLib.Test
 {
     /// <summary>
-    /// This is the a demo user-specific data structure which contains the data points
+    /// This is the demo user-specific data structure which contains the data points
     /// and their uncertainties
     /// </summary>
     public class CustomUserVariable

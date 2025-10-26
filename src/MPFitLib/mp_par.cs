@@ -5,7 +5,7 @@
  *   (Argonne National Laboratory, MINPACK project, March 1980)
  * See the file DISCLAIMER for copyright information.
  * 
- * Tranlation to C Language by S. Moshier (moshier.net)
+ * Translation to C Language by S. Moshier (moshier.net)
  * Translation to C# Language by D. Cuccia (http://davidcuccia.wordpress.com)
  * 
  * Enhancements and packaging by C. Markwardt
