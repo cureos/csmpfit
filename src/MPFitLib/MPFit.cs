@@ -27,6 +27,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+// ReSharper disable IdentifierTypo
 
 namespace MPFitLib
 {
@@ -408,7 +409,6 @@ namespace MPFitLib
             double[] fvec, qtf;
             double[] x, xnew, fjac, diag;
             double[] wa1, wa2, wa3, wa4;
-            IList<double>[] dvectptr;
             int[] ipvt;
 
             int ldfjac;
@@ -586,7 +586,6 @@ namespace MPFitLib
             wa3 = new double[npar];
             wa4 = new double[m];
             ipvt = new int[npar];
-            dvectptr = new IList<double>[npar];
 
             /* Evaluate user function with initial parameter values */
             IList<double>[]? ignore = null;
@@ -635,7 +634,7 @@ namespace MPFitLib
             iflag = mp_fdjac2(funct, m, nfree, ifree, npar, xnew, fvec, fjac, ldfjac,
                       conf.epsfcn, wa4, prv, ref nfev,
                       step, dstep, mpside, qulim, ulim,
-                      ddebug, ddrtol, ddatol, wa2, dvectptr, logger);
+                      ddebug, ddrtol, ddatol, wa2, logger);
 
             if (iflag < 0)
             {
@@ -1190,10 +1189,9 @@ namespace MPFitLib
                   double[] step, double[] dstep, int[] dside,
                   int[]? qulimited, double[]? ulimit,
                   int[] ddebug, double[] ddrtol, double[] ddatol, 
-                  double[] wa2, IList<double>[]? dvec, TextWriter? logger)
+                  double[] wa2, TextWriter? logger)
         {
-            Debug.Assert(dvec != null, "dvec declared nullable for call to funct, but most not be null on call");
-
+            var dvec = new IList<double>[npar];
             /*
             *     **********
             *
@@ -1302,14 +1300,14 @@ namespace MPFitLib
                 {
                     /* Purely analytical derivatives */
                     // reference a range of values inside larger array fjac (pointer arithmetic work-around)
-                    dvec![ifree[j]] = new DelimitedArray<double>(fjac, j * m, m); //fjac + j * m;
+                    dvec[ifree[j]] = new ArraySegment<double>(fjac, j * m, m); //fjac + j * m;
                     hasAnalyticalDeriv = 1;
                 }
                 else if (dside != null && ddebug[ifree[j]] == 1)
                 {
                     /* Numerical and analytical derivatives as a debug cross-check */
                     // reference a range of values inside larger array fjac (pointer arithmetic work-around)
-                    dvec![ifree[j]] = new DelimitedArray<double>(fjac, j * m, m); //fjac + j * m; 
+                    dvec[ifree[j]] = new ArraySegment<double>(fjac, j * m, m); //fjac + j * m; 
                     hasAnalyticalDeriv = 1;
                     hasNumericalDeriv = 1;
                     hasDebugDeriv = 1;
@@ -1572,10 +1570,10 @@ namespace MPFitLib
              */
             ij = 0;
             // references a range of values inside larger array a (pointer arithmatic work-around)
-            var aTemp = new DelimitedArray<double>(a, ij, n);
+            ArraySegment<double> aTemp;
             for (j = 0; j < n; j++)
             {
-                aTemp.SetOffset(ij);
+                aTemp = new ArraySegment<double>(a, ij, m);
                 acnorm[j] = mp_enorm(m, aTemp);
                 rdiag[j] = acnorm[j];
                 wa[j] = rdiag[j];
@@ -1633,7 +1631,7 @@ namespace MPFitLib
                  *	 j-th column of a to a multiple of the j-th unit vector.
                  */
                 jj = j + m * j;
-                aTemp.SetOffsetAndCount(jj, m - j); // pointer arithmatic work-around 
+                aTemp = new ArraySegment<double>(a, jj, m - j); // pointer arithmatic work-around 
                 //ajnorm = mp_enorm(m - j, &a[jj]);
                 ajnorm = mp_enorm(m - j, aTemp);
                 if (ajnorm == zero)
@@ -1686,7 +1684,7 @@ namespace MPFitLib
                             temp = rdiag[k] / wa[k];
                             if ((p05 * temp * temp) <= MP_MACHEP0)
                             {
-                                aTemp.SetOffsetAndCount(jp1 + m * k, m - j - 1); // pointer arithmatic work-around
+                                aTemp = new ArraySegment<double>(a, jp1 + m * k, m - j - 1); // pointer arithmatic work-around
                                 //rdiag[k] = mp_enorm(m - j - 1, &a[jp1 + m * k]);
                                 rdiag[k] = mp_enorm(m - j - 1, aTemp);
                                 wa[k] = rdiag[k];
