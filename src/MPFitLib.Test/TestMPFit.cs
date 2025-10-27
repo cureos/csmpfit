@@ -67,7 +67,7 @@ namespace MPFitLib.Test
             };
 
             /* Call fitting function for 10 data points and 2 parameters */
-            var status = MPFit.Solve(ForwardModels.LinFunc, 10, 2, p, null, null, v, ref result);
+            var status = MPFit.Solve(ForwardModels.LinFunc, 10, 2, p, null, null, v, result);
 
             PrintResult(p, pactual, result);
 
@@ -109,7 +109,7 @@ namespace MPFitLib.Test
             var v = new CustomUserVariable { X = x, Y = y, Ey = ey };
 
             /* Call fitting function for 10 data points and 3 parameters */
-            var status = MPFit.Solve(ForwardModels.QuadFunc, 10, 3, p, null, null, v, ref result);
+            var status = MPFit.Solve(ForwardModels.QuadFunc, 10, 3, p, null, null, v, result);
 
             PrintResult(p, pactual, result);
 
@@ -161,7 +161,7 @@ namespace MPFitLib.Test
 
             /* Call fitting function for 10 data points and 3 parameters (1
                parameter fixed) */
-            var status = MPFit.Solve(ForwardModels.QuadFunc, 10, 3, p, pars, null, v, ref result);
+            var status = MPFit.Solve(ForwardModels.QuadFunc, 10, 3, p, pars, null, v, result);
 
             PrintResult(p, pactual, result);
 
@@ -209,7 +209,7 @@ namespace MPFitLib.Test
 
             /* Call fitting function for 10 data points and 4 parameters (no
                parameters fixed) */
-            var status = MPFit.Solve(ForwardModels.GaussFunc, 10, 4, p, pars, null, v, ref result);
+            var status = MPFit.Solve(ForwardModels.GaussFunc, 10, 4, p, pars, null, v, result);
 
             PrintResult(p, pactual, result);
 
@@ -272,7 +272,7 @@ namespace MPFitLib.Test
 
             /* Call fitting function for 10 data points and 4 parameters (2
                parameters fixed) */
-            var status = MPFit.Solve(ForwardModels.GaussFunc, 10, 4, p, pars, null, v, ref result);
+            var status = MPFit.Solve(ForwardModels.GaussFunc, 10, 4, p, pars, null, v, result);
 
             PrintResult(p, pactual, result);
 
@@ -303,7 +303,7 @@ namespace MPFitLib.Test
             var result = new mp_result(2);
 
             var status = MPFit.Solve(ForwardModels.LineFunc, x.Length, 2, p, mpPar, null, new LineFitData(x, y),
-                ref result);
+                result);
 
             PrintResult(p, pactual, result);
 
@@ -351,7 +351,7 @@ namespace MPFitLib.Test
                parameters fixed) */
 
             var logger = new System.IO.StringWriter();
-            var status = MPFit.Solve(ForwardModels.GaussianFuncAndDerivs, 10, 4, p, pars, null, v, ref result, logger);
+            var status = MPFit.Solve(ForwardModels.GaussianFuncAndDerivs, 10, 4, p, pars, null, v, result, logger);
 
             PrintResult(p, pactual, result);
             Console.WriteLine(logger.ToString());
