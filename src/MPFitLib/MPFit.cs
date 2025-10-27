@@ -321,10 +321,10 @@ namespace MPFitLib
         /// </param>
         /// <returns>0 if computation successful, non-zero otherwise.</returns>
         public static int Solve(mp_func funct, int m, int npar,
-            double[] xall, mp_par[]? pars, mp_config? config, object? prv,
-            ref mp_result? result, TextWriter? logger = null)
+            double[] xall, mp_par[]? pars = null, mp_config? config = null, 
+            object? prv = null, mp_result? result = null, TextWriter? logger = null)
         {
-            return Solve(mp_func_ref, m, npar, xall, pars, config, prv, ref result, logger);
+            return Solve(mp_func_ref, m, npar, xall, pars, config, prv, result, logger);
 
             int mp_func_ref(double[] a, ref double[] fvec, ref IList<double>[]? dvec, object? prv_) =>
                 funct(a, fvec, dvec, prv_);
@@ -371,8 +371,8 @@ namespace MPFitLib
         /// </param>
         /// <returns>0 if computation successful, non-zero otherwise.</returns>
         public static int Solve(mp_func_ref funct, int m, int npar,
-              double[] xall, mp_par[]? pars, mp_config? config, object? prv,
-              ref mp_result? result, TextWriter? logger = null)
+              double[] xall, mp_par[]? pars = null, mp_config? config = null, 
+              object? prv = null, mp_result? result = null, TextWriter? logger = null)
         {
             var conf = new mp_config();
             int i, j;
@@ -1144,7 +1144,6 @@ namespace MPFitLib
                   int[] ddebug, double[] ddrtol, double[] ddatol, 
                   double[] wa2, TextWriter? logger)
         {
-            var dvec = new IList<double>[npar];
             /*
             *     **********
             *
@@ -1222,6 +1221,8 @@ namespace MPFitLib
             *
                   **********
             */
+            var dvec = new IList<double>[npar];
+
             int j;
             var iflag = 0;
             const double zero = 0.0;
