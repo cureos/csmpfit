@@ -1277,8 +1277,7 @@ namespace MPFitLib
             if (hasDebugDeriv != 0)
             {
                 logger?.Write("FJAC DEBUG BEGIN\n");
-                //Console.Write("#  %10s %10s %10s %10s %10s %10s\n",
-                logger?.Write("#  {0} {1} {2} {3} {4} {5}\n",
+                logger?.Write("#  {0,10} {1,10} {2,10} {3,10} {4,10} {5,10}\n",
                     "IPNT", "FUNC", "DERIV_U", "DERIV_N", "DIFF_ABS", "DIFF_REL");
             }
 
@@ -1294,7 +1293,7 @@ namespace MPFitLib
                     /* Check for debugging */
                     if (debug != 0)
                     {
-                        logger?.Write("FJAC PARM {0}\n", ifree[j]);
+                        logger?.Write("FJAC PARM {ifree[j]}\n");
                     }
 
                     /* Skip parameters already done by user-computed partials */
@@ -1354,8 +1353,7 @@ namespace MPFitLib
                                 if ((da == 0 && dr == 0 && (fjold != 0 || fjac[ij] != 0)) ||
                                     ((da != 0 || dr != 0) && Math.Abs(fjold - fjac[ij]) > da + Math.Abs(fjold) * dr))
                                 {
-                                    //Console.Write("   %10d %10.4g %10.4g %10.4g %10.4g %10.4g\n",
-                                    logger?.Write("   {0} {1} {2} {3} {4} {5}\n",
+                                    logger?.Write("   {0,10} {1,10:G4} {2,10:G4} {3,10:G4} {4,10:G4} {5,10:G4}\n",
                                         i, fvec[i], fjold, fjac[ij], fjold - fjac[ij],
                                         fjold == 0 ? 0 : (fjold - fjac[ij]) / fjold);
                                 }
@@ -1396,8 +1394,7 @@ namespace MPFitLib
                                 if ((da == 0 && dr == 0 && (fjold != 0 || fjac[ij] != 0)) ||
                                     ((da != 0 || dr != 0) && Math.Abs(fjold - fjac[ij]) > da + Math.Abs(fjold) * dr))
                                 {
-                                    //Console.Write("   %10d %10.4g %10.4g %10.4g %10.4g %10.4g\n",
-                                    logger?.Write("   {0} {1} {2} {3} {4} {5}\n",
+                                    logger?.Write("   {0,10} {1,10:G4} {2,10:G4} {3,10:G4} {4,10:G4} {5,10:G4}\n",
                                         i, fvec[i], fjold, fjac[ij], fjold - fjac[ij],
                                         fjold == 0 ? 0 : (fjold - fjac[ij]) / fjold);
                                 }
