@@ -30,25 +30,30 @@ namespace MPFitLib.Test
         [Test]
         public void TestLinFit()
         {
-            double[] x = {-1.7237128E+00,1.8712276E+00,-9.6608055E-01,
-		        -2.8394297E-01,1.3416969E+00,1.3757038E+00,
-		        -1.3703436E+00,4.2581975E-02,-1.4970151E-01,
-		        8.2065094E-01};
-            double[] y = {1.9000429E-01,6.5807428E+00,1.4582725E+00,
-		        2.7270851E+00,5.5969253E+00,5.6249280E+00,
-		        0.787615,3.2599759E+00,2.9771762E+00,
-		        4.5936475E+00};
+            double[] x =
+            [
+                -1.7237128E+00, 1.8712276E+00, -9.6608055E-01,
+                -2.8394297E-01, 1.3416969E+00, 1.3757038E+00,
+                -1.3703436E+00, 4.2581975E-02, -1.4970151E-01,
+                8.2065094E-01
+            ];
+            double[] y =
+            [
+                1.9000429E-01, 6.5807428E+00, 1.4582725E+00,
+                2.7270851E+00, 5.5969253E+00, 5.6249280E+00,
+                0.787615, 3.2599759E+00, 2.9771762E+00,
+                4.5936475E+00
+            ];
 
             var ey = new double[10];
             /*        y = a + b * x */
             /*               a    b */
-            double[] p = { 1.0, 1.0 };           /* Parameter initial conditions */
-            double[] pactual = { 3.20, 1.78 };   /* Actual values used to make data */
-            //double[] perror = { 0.0, 0.0 };                   /* Returned parameter errors */
+            double[] p = [1.0, 1.0]; /* Parameter initial conditions */
+            double[] pactual = [3.20, 1.78]; /* Actual values used to make data */
+            double[] perror = [0.0, 0.0];                   /* Returned parameter errors */
 
-            var result = new mp_result(2);
+            var result = new mp_result(2) { xerror = perror };
 
-            //result.xerror = perror;
             for (var i = 0; i < 10; i++)
             {
                 ey[i] = 0.07; /* Data errors */
@@ -65,7 +70,7 @@ namespace MPFitLib.Test
             var status = MPFit.Solve(ForwardModels.LinFunc, 10, 2, p, null, null, v, ref result);
 
             PrintResult(p, pactual, result);
-            
+
             Assert.That(status, Is.EqualTo(1));
             Assert.That(p, Is.EqualTo(pactual).Within(0.01));
         }
@@ -75,22 +80,27 @@ namespace MPFitLib.Test
         [Test]
         public void TestQuadFit()
         {
-            double[] x = {-1.7237128E+00,1.8712276E+00,-9.6608055E-01,
-		        -2.8394297E-01,1.3416969E+00,1.3757038E+00,
-		        -1.3703436E+00,4.2581975E-02,-1.4970151E-01,
-		        8.2065094E-01};
-            double[] y = {2.3095947E+01,2.6449392E+01,1.0204468E+01,
-		        5.40507,1.5787588E+01,1.6520903E+01,
-		        1.5971818E+01,4.7668524E+00,4.9337711E+00,
-		        8.7348375E+00};
+            double[] x =
+            [
+                -1.7237128E+00, 1.8712276E+00, -9.6608055E-01,
+                -2.8394297E-01, 1.3416969E+00, 1.3757038E+00,
+                -1.3703436E+00, 4.2581975E-02, -1.4970151E-01,
+                8.2065094E-01
+            ];
+            double[] y =
+            [
+                2.3095947E+01, 2.6449392E+01, 1.0204468E+01,
+                5.40507, 1.5787588E+01, 1.6520903E+01,
+                1.5971818E+01, 4.7668524E+00, 4.9337711E+00,
+                8.7348375E+00
+            ];
             var ey = new double[10];
-            double[] p = { 1.0, 1.0, 1.0 };        /* Initial conditions */
-            double[] pactual = { 4.7, 0.0, 6.2 };  /* Actual values used to make data */
-            //double[] perror = new double[3];		       /* Returned parameter errors */
+            double[] p = [1.0, 1.0, 1.0]; /* Initial conditions */
+            double[] pactual = [4.7, 0.0, 6.2]; /* Actual values used to make data */
+            double[] perror = new double[3];		       /* Returned parameter errors */
 
-            var result = new mp_result(3);
+            var result = new mp_result(3) { xerror = perror };
 
-            //result.xerror = perror;
             for (var i = 0; i < 10; i++)
             {
                 ey[i] = 0.2; /* Data errors */
@@ -113,36 +123,41 @@ namespace MPFitLib.Test
         [Test]
         public void TestQuadFix()
         {
-            double[] x = {-1.7237128E+00,1.8712276E+00,-9.6608055E-01,
-		-2.8394297E-01,1.3416969E+00,1.3757038E+00,
-		-1.3703436E+00,4.2581975E-02,-1.4970151E-01,
-		8.2065094E-01};
-            double[] y = {2.3095947E+01,2.6449392E+01,1.0204468E+01,
-		5.40507,1.5787588E+01,1.6520903E+01,
-		1.5971818E+01,4.7668524E+00,4.9337711E+00,
-		8.7348375E+00};
+            double[] x =
+            [
+                -1.7237128E+00, 1.8712276E+00, -9.6608055E-01,
+                -2.8394297E-01, 1.3416969E+00, 1.3757038E+00,
+                -1.3703436E+00, 4.2581975E-02, -1.4970151E-01,
+                8.2065094E-01
+            ];
+            double[] y =
+            [
+                2.3095947E+01, 2.6449392E+01, 1.0204468E+01,
+                5.40507, 1.5787588E+01, 1.6520903E+01,
+                1.5971818E+01, 4.7668524E+00, 4.9337711E+00,
+                8.7348375E+00
+            ];
 
             var ey = new double[10];
-            double[] p = { 1.0, 0.0, 1.0 };        /* Initial conditions */
-            double[] pactual = { 4.7, 0.0, 6.2 };  /* Actual values used to make data */
-            //double[] perror = new double[3];		       /* Returned parameter errors */
+            double[] p = [1.0, 0.0, 1.0]; /* Initial conditions */
+            double[] pactual = [4.7, 0.0, 6.2]; /* Actual values used to make data */
+            double[] perror = new double[3];		       /* Returned parameter errors */
 
-            var result = new mp_result(3);
-            //result.xerror = perror;
+            var result = new mp_result(3) { xerror = perror };
 
             var pars = new[] /* Parameter constraints */
-                                {
-                                    new mp_par() , 
-                                    new mp_par {isFixed = 1},  /* Fix parameter 1 */
-                                    new mp_par()
-                                };             
+            {
+                new mp_par(),
+                new mp_par { isFixed = 1 }, /* Fix parameter 1 */
+                new mp_par()
+            };
 
             for (var i = 0; i < 10; i++)
             {
                 ey[i] = 0.2;
             }
 
-            var v = new CustomUserVariable {X = x, Y = y, Ey = ey};
+            var v = new CustomUserVariable { X = x, Y = y, Ey = ey };
 
             /* Call fitting function for 10 data points and 3 parameters (1
                parameter fixed) */
@@ -159,29 +174,34 @@ namespace MPFitLib.Test
         [Test]
         public void TestGaussFit()
         {
-            double[] x = {-1.7237128E+00,1.8712276E+00,-9.6608055E-01,
-		-2.8394297E-01,1.3416969E+00,1.3757038E+00,
-		-1.3703436E+00,4.2581975E-02,-1.4970151E-01,
-		8.2065094E-01};
-            double[] y = {-4.4494256E-02,8.7324673E-01,7.4443483E-01,
-		4.7631559E+00,1.7187297E-01,1.1639182E-01,
-		1.5646480E+00,5.2322268E+00,4.2543168E+00,
-		6.2792623E-01};
+            double[] x =
+            [
+                -1.7237128E+00, 1.8712276E+00, -9.6608055E-01,
+                -2.8394297E-01, 1.3416969E+00, 1.3757038E+00,
+                -1.3703436E+00, 4.2581975E-02, -1.4970151E-01,
+                8.2065094E-01
+            ];
+            double[] y =
+            [
+                -4.4494256E-02, 8.7324673E-01, 7.4443483E-01,
+                4.7631559E+00, 1.7187297E-01, 1.1639182E-01,
+                1.5646480E+00, 5.2322268E+00, 4.2543168E+00,
+                6.2792623E-01
+            ];
             var ey = new double[10];
-            double[] p = { 0.0, 1.0, 1.0, 1.0 };       /* Initial conditions */
-            double[] pactual = { 0.0, 4.70, 0.0, 0.5 };/* Actual values used to make data*/
-            //double[] perror = new double[4];			   /* Returned parameter errors */
+            double[] p = [0.0, 1.0, 1.0, 1.0]; /* Initial conditions */
+            double[] pactual = [0.0, 4.70, 0.0, 0.5]; /* Actual values used to make data*/
+            double[] perror = new double[4];			   /* Returned parameter errors */
             var pars = new[] /* Parameter constraints */
-                                {
-                                    new mp_par(),
-                                    new mp_par(), 
-                                    new mp_par(),
-                                    new mp_par()
-                                };
+            {
+                new mp_par(),
+                new mp_par(),
+                new mp_par(),
+                new mp_par()
+            };
 
-            var result = new mp_result(4);
+            var result = new mp_result(4) { xerror = perror };
 
-            //result.xerror = perror;
             /* No constraints */
             for (var i = 0; i < 10; i++) ey[i] = 0.5;
 
@@ -198,7 +218,7 @@ namespace MPFitLib.Test
         }
 
 
-        /* Test harness routine, which contains test gaussian-peak data 
+        /* Test harness routine, which contains test gaussian-peak data
 
            Example of fixing two parameter
 
@@ -207,33 +227,38 @@ namespace MPFitLib.Test
         [Test]
         public void TestGaussFix()
         {
-            double[] x = {-1.7237128E+00,1.8712276E+00,-9.6608055E-01,
-		-2.8394297E-01,1.3416969E+00,1.3757038E+00,
-		-1.3703436E+00,4.2581975E-02,-1.4970151E-01,
-		8.2065094E-01};
-            double[] y = {-4.4494256E-02,8.7324673E-01,7.4443483E-01,
-		4.7631559E+00,1.7187297E-01,1.1639182E-01,
-		1.5646480E+00,5.2322268E+00,4.2543168E+00,
-		6.2792623E-01};
+            double[] x =
+            [
+                -1.7237128E+00, 1.8712276E+00, -9.6608055E-01,
+                -2.8394297E-01, 1.3416969E+00, 1.3757038E+00,
+                -1.3703436E+00, 4.2581975E-02, -1.4970151E-01,
+                8.2065094E-01
+            ];
+            double[] y =
+            [
+                -4.4494256E-02, 8.7324673E-01, 7.4443483E-01,
+                4.7631559E+00, 1.7187297E-01, 1.1639182E-01,
+                1.5646480E+00, 5.2322268E+00, 4.2543168E+00,
+                6.2792623E-01
+            ];
             var ey = new double[10];
-            double[] p = { 0.0, 1.0, 0.0, 0.1 };       /* Initial conditions */
-            double[] pactual = { 0.0, 4.70, 0.0, 0.5 };/* Actual values used to make data*/
-            //double[] perror = new double[4];			   /* Returned parameter errors */
+            double[] p = [0.0, 1.0, 0.0, 0.1]; /* Initial conditions */
+            double[] pactual = [0.0, 4.70, 0.0, 0.5]; /* Actual values used to make data*/
+            double[] perror = new double[4];			   /* Returned parameter errors */
 
-            var result = new mp_result(4);
-            //result.xerror = perror;
+            var result = new mp_result(4) { xerror = perror };
 
-            var pars = new[]/* Parameter constraints */
-                                {
-                                    new mp_par {isFixed = 1},/* Fix parameters 0 and 2 */
-                                    new mp_par(), 
-                                    new mp_par {isFixed = 1},
-                                    new mp_par()
-                                };
+            var pars = new[] /* Parameter constraints */
+            {
+                new mp_par { isFixed = 1 }, /* Fix parameters 0 and 2 */
+                new mp_par(),
+                new mp_par { isFixed = 1 },
+                new mp_par()
+            };
 
             /* How to put limits on a parameter.  In this case, parameter 3 is
                limited to be between -0.3 and +0.2.
-            pars[3].limited[0] = 0;    
+            pars[3].limited[0] = 0;
             pars[3].limited[1] = 1;
             pars[3].limits[0] = -0.3;
             pars[3].limits[1] = +0.2;
@@ -277,7 +302,8 @@ namespace MPFitLib.Test
 
             var result = new mp_result(2);
 
-            var status = MPFit.Solve(ForwardModels.LineFunc, x.Length, 2, p, mpPar, null, new LineFitData(x, y), ref result);
+            var status = MPFit.Solve(ForwardModels.LineFunc, x.Length, 2, p, mpPar, null, new LineFitData(x, y),
+                ref result);
 
             PrintResult(p, pactual, result);
 
@@ -289,28 +315,29 @@ namespace MPFitLib.Test
         public void TestGaussianWithDerivs()
         {
             double[] x =
-            {
+            [
                 -1.7237128E+00, 1.8712276E+00, -9.6608055E-01,
                 -2.8394297E-01, 1.3416969E+00, 1.3757038E+00,
                 -1.3703436E+00, 4.2581975E-02, -1.4970151E-01,
                 8.2065094E-01
-            };
+            ];
             double[] y =
-            {
+            [
                 -4.4494256E-02, 8.7324673E-01, 7.4443483E-01,
                 4.7631559E+00, 1.7187297E-01, 1.1639182E-01,
                 1.5646480E+00, 5.2322268E+00, 4.2543168E+00,
                 6.2792623E-01
-            };
+            ];
             var ey = new double[10];
-            double[] p = { 0.0, 1.0, 1.0, 1.0 };        // Initial conditions
-           double[] pactual = { 0.0, 4.70, 0.0, 0.5 };  // Actual values used to make data
-            mp_par[] pars = {
-                new mp_par {side = 3, deriv_debug = 0},
-                new mp_par {side = 1, deriv_debug = 0},
-                new mp_par {side = 3, deriv_debug = 0},
-                new mp_par {side = 1, deriv_debug = 0}
-            };
+            double[] p = [0.0, 1.0, 1.0, 1.0]; // Initial conditions
+            double[] pactual = [0.0, 4.70, 0.0, 0.5]; // Actual values used to make data
+            mp_par[] pars =
+            [
+                new() { side = 3, deriv_debug = 0 },
+                new() { side = 1, deriv_debug = 0 },
+                new() { side = 3, deriv_debug = 0 },
+                new() { side = 1, deriv_debug = 0 }
+            ];
 
             var result = new mp_result(4);
 
@@ -355,7 +382,7 @@ namespace MPFitLib.Test
                 for (i = 0; i < x.Length; i++)
                 {
                     Console.Write("  P[{0}] = {1} +/- {2}     (ACTUAL {3})\n",
-                       i, x[i], result?.xerror[i], xact[i]);
+                        i, x[i], result?.xerror[i], xact[i]);
                 }
             }
             else
@@ -363,7 +390,7 @@ namespace MPFitLib.Test
                 for (i = 0; i < x.Length; i++)
                 {
                     Console.Write("  P[{0}] = {1} +/- {2}\n",
-                       i, x[i], result?.xerror[i]);
+                        i, x[i], result?.xerror[i]);
                 }
             }
         }
