@@ -22,8 +22,8 @@ namespace MPFitLib.Test
     {
         public LineFitData(double[] x, double[] y)
         {
-            this.X = x;
-            this.Y = y;
+            X = x;
+            Y = y;
         }
 
         public double[] X { get; }
