@@ -20,13 +20,16 @@
 */
 
 using System;
+using System.IO;
 using NUnit.Framework;
 
 namespace MPFitLib.Test
 {
     public class TestMPFit
     {
-        /* Test harness routine, which contains test data, invokes mpfit() */
+        /// <summary>
+        /// Test harness routine, which contains test data, invokes mpfit()
+        /// </summary>
         [Test]
         public void TestLinFit()
         {
@@ -50,9 +53,8 @@ namespace MPFitLib.Test
             /*               a    b */
             double[] p = [1.0, 1.0]; /* Parameter initial conditions */
             double[] pactual = [3.20, 1.78]; /* Actual values used to make data */
-            double[] perror = [0.0, 0.0];                   /* Returned parameter errors */
 
-            var result = new mp_result(2) { xerror = perror };
+            var result = new mp_result(showXerror: true);
 
             for (var i = 0; i < 10; i++)
             {
@@ -75,8 +77,9 @@ namespace MPFitLib.Test
             Assert.That(p, Is.EqualTo(pactual).Within(0.01));
         }
 
-        /* Test harness routine, which contains test quadratic data, invokes
-           Solve() */
+        /// <summary>
+        /// Test harness routine, which contains test quadratic data, invokes Solve()
+        /// </summary>
         [Test]
         public void TestQuadFit()
         {
@@ -97,9 +100,8 @@ namespace MPFitLib.Test
             var ey = new double[10];
             double[] p = [1.0, 1.0, 1.0]; /* Initial conditions */
             double[] pactual = [4.7, 0.0, 6.2]; /* Actual values used to make data */
-            double[] perror = new double[3];		       /* Returned parameter errors */
 
-            var result = new mp_result(3) { xerror = perror };
+            var result = new mp_result(showXerror: true);
 
             for (var i = 0; i < 10; i++)
             {
@@ -117,9 +119,10 @@ namespace MPFitLib.Test
             Assert.That(p, Is.EqualTo(pactual).Within(0.1));
         }
 
-        /* Test harness routine, which contains test quadratic data;
-           Example of how to fix a parameter
-        */
+        /// <summary>
+        /// Test harness routine, which contains test quadratic data;
+        /// Example of how to fix a parameter
+        /// </summary>
         [Test]
         public void TestQuadFix()
         {
@@ -141,9 +144,8 @@ namespace MPFitLib.Test
             var ey = new double[10];
             double[] p = [1.0, 0.0, 1.0]; /* Initial conditions */
             double[] pactual = [4.7, 0.0, 6.2]; /* Actual values used to make data */
-            double[] perror = new double[3];		       /* Returned parameter errors */
 
-            var result = new mp_result(3) { xerror = perror };
+            var result = new mp_result(showXerror: true);
 
             var pars = new[] /* Parameter constraints */
             {
@@ -170,7 +172,9 @@ namespace MPFitLib.Test
         }
 
 
-        /* Test harness routine, which contains test gaussian-peak data */
+        /// <summary>
+        /// Test harness routine, which contains test gaussian-peak data
+        /// </summary>
         [Test]
         public void TestGaussFit()
         {
@@ -191,7 +195,6 @@ namespace MPFitLib.Test
             var ey = new double[10];
             double[] p = [0.0, 1.0, 1.0, 1.0]; /* Initial conditions */
             double[] pactual = [0.0, 4.70, 0.0, 0.5]; /* Actual values used to make data*/
-            double[] perror = new double[4];			   /* Returned parameter errors */
             var pars = new[] /* Parameter constraints */
             {
                 new mp_par(),
@@ -200,7 +203,7 @@ namespace MPFitLib.Test
                 new mp_par()
             };
 
-            var result = new mp_result(4) { xerror = perror };
+            var result = new mp_result(showXerror: true);
 
             /* No constraints */
             for (var i = 0; i < 10; i++) ey[i] = 0.5;
@@ -218,12 +221,11 @@ namespace MPFitLib.Test
         }
 
 
-        /* Test harness routine, which contains test gaussian-peak data
-
-           Example of fixing two parameter
-
-           Commented example of how to put boundary constraints
-        */
+        /// <summary>
+        /// Test harness routine, which contains test gaussian-peak data
+        /// Example of fixing two parameter
+        /// Commented example of how to put boundary constraints
+        /// </summary>
         [Test]
         public void TestGaussFix()
         {
@@ -244,9 +246,8 @@ namespace MPFitLib.Test
             var ey = new double[10];
             double[] p = [0.0, 1.0, 0.0, 0.1]; /* Initial conditions */
             double[] pactual = [0.0, 4.70, 0.0, 0.5]; /* Actual values used to make data*/
-            double[] perror = new double[4];			   /* Returned parameter errors */
 
-            var result = new mp_result(4) { xerror = perror };
+            var result = new mp_result(showXerror: true);
 
             var pars = new[] /* Parameter constraints */
             {
@@ -300,7 +301,7 @@ namespace MPFitLib.Test
             mpPar[0].side = 3;
             mpPar[1].side = 3;
 
-            var result = new mp_result(2);
+            var result = new mp_result();
 
             var status = MPFit.Solve(ForwardModels.LineFunc, x.Length, 2, p, mpPar, null, new LineFitData(x, y),
                 result);
@@ -339,7 +340,7 @@ namespace MPFitLib.Test
                 new() { side = 1, deriv_debug = 0 }
             ];
 
-            var result = new mp_result(4);
+            var result = new mp_result();
 
             /* No constraints */
 
@@ -350,7 +351,7 @@ namespace MPFitLib.Test
             /* Call fitting function for 10 data points and 4 parameters (no
                parameters fixed) */
 
-            var logger = new System.IO.StringWriter();
+            var logger = new StringWriter();
             var status = MPFit.Solve(ForwardModels.GaussianFuncAndDerivs, 10, 4, p, pars, null, v, result, logger);
 
             PrintResult(p, pactual, result);
@@ -363,8 +364,6 @@ namespace MPFitLib.Test
         /* Simple routine to print the fit results */
         private static void PrintResult(double[] x, double[]? xact, mp_result? result)
         {
-            int i;
-
             if (result != null)
             {
                 Console.Write("  CHI-SQUARE = {0}    ({1} DOF)\n",
@@ -379,18 +378,18 @@ namespace MPFitLib.Test
 
             if (xact != null)
             {
-                for (i = 0; i < x.Length; i++)
+                for (var i = 0; i < x.Length; i++)
                 {
                     Console.Write("  P[{0}] = {1} +/- {2}     (ACTUAL {3})\n",
-                        i, x[i], result?.xerror[i], xact[i]);
+                        i, x[i], result?.xerror?[i] ?? double.NaN, xact[i]);
                 }
             }
             else
             {
-                for (i = 0; i < x.Length; i++)
+                for (var i = 0; i < x.Length; i++)
                 {
                     Console.Write("  P[{0}] = {1} +/- {2}\n",
-                        i, x[i], result?.xerror[i]);
+                        i, x[i], result?.xerror?[i] ?? double.NaN);
                 }
             }
         }

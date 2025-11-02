@@ -22,33 +22,110 @@
    added changes from mpfit version 1.4 (no file versions provided)
  */
 
+using System;
+
 namespace MPFitLib
 {
-    /* Definition of results structure, for when fit completes */
+    /// <summary>
+    /// Definition of results structure, for when fit completes
+    /// </summary>
     public class mp_result
     {
-        public double bestnorm;     /* Final chi^2 */
-        public double orignorm;     /* Starting value of chi^2 */
-        public int niter;           /* Number of iterations */
-        public int nfev;            /* Number of function evaluations */
-        public int status;          /* Fitting status code */
+        /// <summary>
+        /// Final chi^2
+        /// </summary>
+        public double bestnorm;
 
-        public int npar;            /* Total number of parameters */
-        public int nfree;           /* Number of free parameters */
-        public int npegged;         /* Number of pegged parameters */
-        public int nfunc;           /* Number of residuals (= num. of data points) */
+        /// <summary>
+        /// Starting value of chi^2
+        /// </summary>
+        public double orignorm;
 
-        public double[]? resid;       /* Final residuals
-			          nfunc-vector, or 0 if not desired */
-        public double[] xerror;      /* Final parameter uncertainties (1-sigma)
-			          npar-vector, or 0 if not desired */
-        public double[]? covar;       /* Final parameter covariance matrix
-			          npar x npar array, or 0 if not desired */
-        public string? version;    /* MPFIT version string */
+        /// <summary>
+        /// Number of iterations
+        /// </summary>
+        public int niter;
 
+        /// <summary>
+        /// Number of function evaluations
+        /// </summary>
+        public int nfev;
+
+        /// <summary>
+        /// Fitting status code
+        /// </summary>
+        public int status;
+
+        /// <summary>
+        /// Total number of parameters
+        /// </summary>
+        public int npar;
+
+        /// <summary>
+        /// Number of free parameters
+        /// </summary>
+        public int nfree;
+
+        /// <summary>
+        /// Number of pegged parameters
+        /// </summary>
+        public int npegged;
+
+        /// <summary>
+        /// Number of residuals (= num. of data points)
+        /// </summary>
+        public int nfunc;
+
+        /// <summary>
+        /// Final residuals
+        /// nfunc-vector, or null if not desired
+        /// </summary>
+        public double[]? resid;
+
+        /// <summary>
+        /// Final parameter uncertainties (1-sigma)
+        /// npar-vector, or null if not desired
+        /// </summary>
+        public double[]? xerror;
+
+        /// <summary>
+        /// Final parameter covariance matrix
+        /// npar x npar array, or null if not desired
+        /// </summary>
+        public double[]? covar;
+
+        /// <summary>
+        /// MPFIT version string
+        /// </summary>
+        public string? version;
+
+        /// <summary>
+        /// Initializes a new instance of the mp_result class with the specified number of parameters.
+        /// </summary>
+        /// <param name="numParameters">The number of parameters for which to allocate error values.
+        /// Must be greater than zero.</param>
+        /// <remarks>On exit, <see cref="xerror"/> will be redefined to <c>npar</c> provided in the
+        /// <c>Solve</c> method.</remarks>
         public mp_result(int numParameters)
         {
             xerror = new double[numParameters];
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the mp_result class.
+        /// </summary>
+        /// <param name="showResid">Should <see cref="resid"/> be provided in <see cref="mp_result"/>
+        /// on <c>Solve</c> exit? Default value <c>false</c>.</param>
+        /// <param name="showXerror">Should <see cref="xerror"/> be provided in <see cref="mp_result"/>
+        /// on <c>Solve</c> exit? Default value <c>false</c>.</param>
+        /// <param name="showCovar">Should <see cref="covar"/> be provided in <see cref="mp_result"/>
+        /// on <c>Solve</c> exit? Default value <c>false</c>.</param>
+        public mp_result(bool showResid = false, bool showXerror = false, bool showCovar = false)
+        {
+            // Initialized arrays will be allocated by MPFit.Solve() as needed
+            if (showResid) resid = Array.Empty<double>();
+            if (showXerror) xerror = Array.Empty<double>();
+            if (showCovar) covar = Array.Empty<double>();
         }
     }
 }

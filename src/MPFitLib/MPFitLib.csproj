@@ -20,7 +20,6 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <NoWarn>CS1591</NoWarn>
   </PropertyGroup>
   
   <PropertyGroup>

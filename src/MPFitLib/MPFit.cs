@@ -58,21 +58,12 @@ namespace MPFitLib
         public const int MP_XTOL = 7;              /* xtol is too small; no further improvement*/
         public const int MP_GTOL = 8;              /* gtol is too small; no further improvement*/
 
-#if FLOAT_PRECISION
-        /* Float precision */
-        public const float MP_MACHEP0  =1.19209e-07;
-        public const float MP_DWARF   = 1.17549e-38;
-        public const float MP_GIANT   = 3.40282e+38;
-        public const float MP_RDWARF = 1.3278686946331594e-018;
-        public const float MP_RGIANT = 1844673472786071600;
-#else
         /* Double precision numeric constants */
         public const double MP_MACHEP0 = 2.2204460e-16;
         public const double MP_DWARF = 2.2250739e-308;
         public const double MP_GIANT = 1.7976931e+308;
         public const double MP_RDWARF = 1.8269129289596699331800430554921e-153;
         public const double MP_RGIANT = 1.3407807799935081109978164571307e+153;
-#endif
 
         /*    Expand for full description of Solve and lmdif functions
         *     **********
@@ -1071,15 +1062,18 @@ namespace MPFitLib
                 }
             }
 
+            // Detailed results not requested, return immediately
+            if (result == null) return info;
+
             /* Compute and return the covariance matrix and/or parameter errors */
-            if (result != null && result.covar != null)
+            if (result.covar != null || result.xerror != null)
             {
                 mp_covar(nfree, fjac, ldfjac, ipvt, conf.covtol, wa2);
 
                 if (result.covar != null)
                 {
-                    /* Zero the destination covariance array */
-                    for (j = 0; j < npar * npar; j++) result.covar[j] = 0;
+                    /* Allocate the destination covariance array sufficiently */
+                    result.covar = new double[npar * npar];
 
                     /* Transfer the covariance array */
                     for (j = 0; j < nfree; j++)
@@ -1091,37 +1085,38 @@ namespace MPFitLib
                     }
                 }
 
-                for (j = 0; j < npar; j++) result.xerror[j] = 0;
-
-                for (j = 0; j < nfree; j++)
+                if (result.xerror != null)
                 {
-                    var cc = fjac[j * ldfjac + j];
-                    if (cc > 0)
+                    /* Allocate the destination xerror array sufficiently */
+                    result.xerror = new double[npar];
+                    for (j = 0; j < nfree; j++)
                     {
-                        result.xerror[ifree[j]] = Math.Sqrt(cc);
+                        var cc = fjac[j * ldfjac + j];
+                        if (cc > 0)
+                        {
+                            result.xerror[ifree[j]] = Math.Sqrt(cc);
+                        }
                     }
                 }
             }
 
-            if (result != null)
-            {
-                result.version = MPFIT_VERSION;
-                result.bestnorm = Math.Max(fnorm, fnorm1);
-                result.bestnorm *= result.bestnorm;
-                result.orignorm = orignorm;
-                result.status = info;
-                result.niter = iter;
-                result.nfev = nfev;
-                result.npar = npar;
-                result.nfree = nfree;
-                result.npegged = npegged;
-                result.nfunc = m;
+            result.version = MPFIT_VERSION;
+            result.bestnorm = Math.Max(fnorm, fnorm1);
+            result.bestnorm *= result.bestnorm;
+            result.orignorm = orignorm;
+            result.status = info;
+            result.niter = iter;
+            result.nfev = nfev;
+            result.npar = npar;
+            result.nfree = nfree;
+            result.npegged = npegged;
+            result.nfunc = m;
 
-                /* Copy residuals if requested */
-                if (result.resid != null)
-                {
-                    for (j = 0; j < m; j++) result.resid[j] = fvec[j];
-                }
+            /* Copy residuals if requested */
+            if (result.resid != null)
+            {
+                result.resid = new double[m];
+                for (j = 0; j < m; j++) result.resid[j] = fvec[j];
             }
 
             return info;
