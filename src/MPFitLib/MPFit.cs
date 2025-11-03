@@ -32,37 +32,140 @@ namespace MPFitLib
 {
     public static class MPFit
     {
+        /// <summary>
+        /// Version number of this MPFit library
+        /// </summary>
         public const string MPFIT_VERSION = "1.5";
 
+        /// <summary>
+        /// Set <see cref="mp_config.maxiter"/> to this value to indicate
+        /// that only basic error checking should be done
+        /// </summary>
         public const int MP_NO_ITER = -1;
 
         /* Error codes */
-        public const int MP_ERR_INPUT = 0;         /* General input parameter error */
-        public const int MP_ERR_NAN = -16;         /* User function produced non-finite values */
-        public const int MP_ERR_FUNC = -17;        /* No user function was supplied */
-        public const int MP_ERR_NPOINTS = -18;     /* No user data points were supplied */
-        public const int MP_ERR_NFREE = -19;       /* No free parameters */
-        public const int MP_ERR_MEMORY = -20;      /* Memory allocation error */
-        public const int MP_ERR_INITBOUNDS = -21;  /* Initial values inconsistent w constraints*/
-        public const int MP_ERR_BOUNDS = -22;      /* Initial constraints inconsistent */
-        public const int MP_ERR_PARAM = -23;       /* General input parameter error */
-        public const int MP_ERR_DOF = -24;         /* Not enough degrees of freedom */
+
+        /// <summary>
+        /// General input parameter error
+        /// </summary>
+        public const int MP_ERR_INPUT = 0;
+
+        /// <summary>
+        /// User function produced non-finite values
+        /// </summary>
+        public const int MP_ERR_NAN = -16;
+
+        /// <summary>
+        /// No user function was supplied
+        /// </summary>
+        /// <remarks>Not used, maintained for consistency with C mpfit.</remarks>
+        public const int MP_ERR_FUNC = -17;
+
+        /// <summary>
+        /// No user data points were supplied
+        /// </summary>
+        public const int MP_ERR_NPOINTS = -18;
+
+        /// <summary>
+        /// No free parameters
+        /// </summary>
+        public const int MP_ERR_NFREE = -19;
+
+        /// <summary>
+        /// Memory allocation error
+        /// </summary>
+        /// <remarks>Not used, maintained for consistency with C mpfit.</remarks>
+        public const int MP_ERR_MEMORY = -20;
+
+        /// <summary>
+        /// Initial values inconsistent with constraints
+        /// </summary>
+        public const int MP_ERR_INITBOUNDS = -21;
+
+        /// <summary>
+        /// Initial constraints inconsistent
+        /// </summary>
+        public const int MP_ERR_BOUNDS = -22;
+
+        /// <summary>
+        /// General input parameter error
+        /// </summary>
+        public const int MP_ERR_PARAM = -23;
+
+        /// <summary>
+        /// Not enough degrees of freedom
+        /// </summary>
+        public const int MP_ERR_DOF = -24;
 
         /* Potential success status codes */
-        public const int MP_OK_CHI = 1;            /* Convergence in chi-square value */
-        public const int MP_OK_PAR = 2;            /* Convergence in parameter value */
-        public const int MP_OK_BOTH = 3;           /* Both MP_OK_PAR and MP_OK_CHI hold */
-        public const int MP_OK_DIR = 4;            /* Convergence in orthogonality */
-        public const int MP_MAXITER = 5;           /* Maximum number of iterations reached */
-        public const int MP_FTOL = 6;              /* ftol is too small; no further improvement*/
-        public const int MP_XTOL = 7;              /* xtol is too small; no further improvement*/
-        public const int MP_GTOL = 8;              /* gtol is too small; no further improvement*/
+
+        /// <summary>
+        /// Convergence in chi-square value
+        /// </summary>
+        public const int MP_OK_CHI = 1;
+
+        /// <summary>
+        /// Convergence in parameter value
+        /// </summary>
+        public const int MP_OK_PAR = 2;
+
+        /// <summary>
+        /// Both MP_OK_PAR and MP_OK_CHI hold
+        /// </summary>
+        public const int MP_OK_BOTH = 3;
+
+        /// <summary>
+        /// Convergence in orthogonality
+        /// </summary>
+        public const int MP_OK_DIR = 4;
+
+        /// <summary>
+        /// Maximum number of iterations reached
+        /// </summary>
+        public const int MP_MAXITER = 5;
+
+        /// <summary>
+        /// ftol is too small; no further improvement
+        /// </summary>
+        public const int MP_FTOL = 6;
+
+        /// <summary>
+        /// xtol is too small; no further improvement
+        /// </summary>
+        public const int MP_XTOL = 7;
+
+        /// <summary>
+        /// gtol is too small; no further improvement
+        /// </summary>
+        public const int MP_GTOL = 8;
 
         /* Double precision numeric constants */
+
+        /// <summary>
+        /// Estimated machine epsilon.
+        /// </summary>
         public const double MP_MACHEP0 = 2.2204460e-16;
+
+        /// <summary>
+        /// Represents the smallest positive normalized value that can be represented by a double-precision
+        /// floating-point number.
+        /// </summary>
         public const double MP_DWARF = 2.2250739e-308;
+
+        /// <summary>
+        /// Represents a large constant value for use in mathematical calculations or as a sentinel value.
+        /// </summary>
+        /// <remarks>Not used, maintained for consistency with C mpfit.</remarks>
         public const double MP_GIANT = 1.7976931e+308;
+
+        /// <summary>
+        /// Represents a very small constant value used for mathematical or scientific calculations.
+        /// </summary>
         public const double MP_RDWARF = 1.8269129289596699331800430554921e-153;
+
+        /// <summary>
+        /// Represents a very large constant value used for mathematical or scientific calculations.
+        /// </summary>
         public const double MP_RGIANT = 1.3407807799935081109978164571307e+153;
 
         /*    Expand for full description of Solve and lmdif functions
@@ -99,17 +202,6 @@ namespace MPFitLib
         *                          Upon return, *result will be updated, and
         *                          any of the non-null arrays will be filled.
         *
-        *
-        * FORTRAN DOCUMENTATION BELOW
-        *
-        *
-        *     the subroutine statement is
-        *
-        *	subroutine lmdif(fcn,m,n,x,fvec,ftol,xtol,gtol,maxfev,epsfcn,
-        *			 diag,mode,factor,nprint,info,nfev,fjac,
-        *			 ldfjac,ipvt,qtf,wa1,wa2,wa3,wa4)
-        *
-        *     where
         *
         *	fcn is the name of the user-supplied subroutine which
         *	  calculates the functions. fcn must be declared
@@ -260,14 +352,6 @@ namespace MPFitLib
         *	wa1, wa2, and wa3 are work arrays of length n.
         *
         *	wa4 is a work array of length m.
-        *
-        *     subprograms called
-        *
-        *	user-supplied ...... fcn
-        *
-        *	minpack-supplied ... dpmpar,enorm,fdjac2,lmpar,qrfac
-        *
-        *	fortran-supplied ... dabs,dmax1,dmin1,dsqrt,mod
         *
         *     argonne national laboratory. minpack project. march 1980.
         *     burton s. garbow, kenneth e. hillstrom, jorge j. more
@@ -1124,6 +1208,67 @@ namespace MPFitLib
 
         /************************fdjac2.c*************************/
 
+        /*
+        *     **********
+        *
+        *     this subroutine computes a forward-difference approximation
+        *     to the m by n jacobian matrix associated with a specified
+        *     problem of m functions in n variables.
+        *
+        *	fcn is the name of the user-supplied subroutine which
+        *	  calculates the functions. fcn must be declared
+        *	  in an external statement in the user calling
+        *	  program, and should be written as follows.
+        *
+        *	  subroutine fcn(m,n,x,fvec,iflag)
+        *	  integer m,n,iflag
+        *	  double precision x(n),fvec(m)
+        *	  ----------
+        *	  calculate the functions at x and
+        *	  return this vector in fvec.
+        *	  ----------
+        *	  return
+        *	  end
+        *
+        *	  the value of iflag should not be changed by fcn unless
+        *	  the user wants to terminate execution of fdjac2.
+        *	  in this case set iflag to a negative integer.
+        *
+        *	m is a positive integer input variable set to the number
+        *	  of functions.
+        *
+        *	n is a positive integer input variable set to the number
+        *	  of variables. n must not exceed m.
+        *
+        *	x is an input array of length n.
+        *
+        *	fvec is an input array of length m which must contain the
+        *	  functions evaluated at x.
+        *
+        *	fjac is an output m by n array which contains the
+        *	  approximation to the jacobian matrix evaluated at x.
+        *
+        *	ldfjac is a positive integer input variable not less than m
+        *	  which specifies the leading dimension of the array fjac.
+        *
+        *	iflag is an integer variable which can be used to terminate
+        *	  the execution of fdjac2. see description of fcn.
+        *
+        *	epsfcn is an input variable used in determining a suitable
+        *	  step length for the forward-difference approximation. this
+        *	  approximation assumes that the relative errors in the
+        *	  functions are of the order of epsfcn. if epsfcn is less
+        *	  than the machine precision, it is assumed that the relative
+        *	  errors in the functions are of the order of the machine
+        *	  precision.
+        *
+        *	wa is a work array of length m.
+        *
+        *     argonne national laboratory. minpack project. march 1980.
+        *     burton s. garbow, kenneth e. hillstrom, jorge j. more
+        *
+              **********
+        */
         private static int mp_fdjac2(mp_func_ref funct,
                   int m, int n, int[] ifree, int npar, double[] x, double[] fvec,
                   double[] fjac, double epsfcn,
@@ -1133,83 +1278,6 @@ namespace MPFitLib
                   int[] ddebug, double[] ddrtol, double[] ddatol, 
                   double[] wa2, TextWriter? logger)
         {
-            /*
-            *     **********
-            *
-            *     subroutine fdjac2
-            *
-            *     this subroutine computes a forward-difference approximation
-            *     to the m by n jacobian matrix associated with a specified
-            *     problem of m functions in n variables.
-            *
-            *     the subroutine statement is
-            *
-            *	subroutine fdjac2(fcn,m,n,x,fvec,fjac,ldfjac,iflag,epsfcn,wa)
-            *
-            *     where
-            *
-            *	fcn is the name of the user-supplied subroutine which
-            *	  calculates the functions. fcn must be declared
-            *	  in an external statement in the user calling
-            *	  program, and should be written as follows.
-            *
-            *	  subroutine fcn(m,n,x,fvec,iflag)
-            *	  integer m,n,iflag
-            *	  double precision x(n),fvec(m)
-            *	  ----------
-            *	  calculate the functions at x and
-            *	  return this vector in fvec.
-            *	  ----------
-            *	  return
-            *	  end
-            *
-            *	  the value of iflag should not be changed by fcn unless
-            *	  the user wants to terminate execution of fdjac2.
-            *	  in this case set iflag to a negative integer.
-            *
-            *	m is a positive integer input variable set to the number
-            *	  of functions.
-            *
-            *	n is a positive integer input variable set to the number
-            *	  of variables. n must not exceed m.
-            *
-            *	x is an input array of length n.
-            *
-            *	fvec is an input array of length m which must contain the
-            *	  functions evaluated at x.
-            *
-            *	fjac is an output m by n array which contains the
-            *	  approximation to the jacobian matrix evaluated at x.
-            *
-            *	ldfjac is a positive integer input variable not less than m
-            *	  which specifies the leading dimension of the array fjac.
-            *
-            *	iflag is an integer variable which can be used to terminate
-            *	  the execution of fdjac2. see description of fcn.
-            *
-            *	epsfcn is an input variable used in determining a suitable
-            *	  step length for the forward-difference approximation. this
-            *	  approximation assumes that the relative errors in the
-            *	  functions are of the order of epsfcn. if epsfcn is less
-            *	  than the machine precision, it is assumed that the relative
-            *	  errors in the functions are of the order of the machine
-            *	  precision.
-            *
-            *	wa is a work array of length m.
-            *
-            *     subprograms called
-            *
-            *	user-supplied ...... fcn
-            *
-            *	minpack-supplied ... dpmpar
-            *
-            *	fortran-supplied ... dabs,dmax1,dsqrt
-            *
-            *     argonne national laboratory. minpack project. march 1980.
-            *     burton s. garbow, kenneth e. hillstrom, jorge j. more
-            *
-                  **********
-            */
             var dvec = new IList<double>[npar];
 
             int j;
@@ -2237,8 +2305,6 @@ namespace MPFitLib
              *     **********
              */
             double ans, temp;
-            var rdwarf = MP_RDWARF;
-            var rgiant = MP_RGIANT;
             const double zero = 0.0;
             const double one = 1.0;
 
@@ -2248,12 +2314,12 @@ namespace MPFitLib
             var x1max = zero;
             var x3max = zero;
             double floatn = n;
-            var agiant = rgiant / floatn;
+            var agiant = MP_RGIANT / floatn;
 
             for (var i = 0; i < n; i++)
             {
                 var xabs = Math.Abs(x[i]);
-                if (xabs > rdwarf && xabs < agiant)
+                if (xabs > MP_RDWARF && xabs < agiant)
                 {
                     /*
                      *	    sum for intermediate components.
@@ -2262,7 +2328,7 @@ namespace MPFitLib
                     continue;
                 }
 
-                if (xabs > rdwarf)
+                if (xabs > MP_RDWARF)
                 {
                     /*
                      *	       sum for large components.
