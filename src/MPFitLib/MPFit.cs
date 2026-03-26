@@ -377,7 +377,11 @@ namespace MPFitLib
         /// or 0 (null pointer) for unconstrained fitting
         /// [ see README and mp_par.cs for definition &amp; use of mp_par]
         /// </param>
-        /// <param name="config"></param>
+        /// <param name="config">
+        /// pointer to structure which specifies the configuration of MPFit.Solve; or
+        /// <see langword="null"/> if the default configuration is to be used.
+        /// See <see cref="mp_config"/> for definition and use of config.
+        /// </param>
         /// <param name="prv">
         /// any private user data which is to be passed directly
         ///  to funct without modification by MPFit.Solve.
@@ -427,7 +431,11 @@ namespace MPFitLib
         /// or 0 (null pointer) for unconstrained fitting
         /// [ see README and mp_par.cs for definition &amp; use of mp_par]
         /// </param>
-        /// <param name="config"></param>
+        /// <param name="config">
+        /// pointer to structure which specifies the configuration of MPFit.Solve; or
+        /// <see langword="null"/> if the default configuration is to be used.
+        /// See <see cref="mp_config"/> for definition and use of config.
+        /// </param>
         /// <param name="prv">
         /// any private user data which is to be passed directly
         ///  to funct without modification by MPFit.Solve.
